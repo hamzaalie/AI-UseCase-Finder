@@ -35,27 +35,37 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: "Please enter a valid email." }, { status: 400 });
   }
 
-  try {
-    if (process.env.RESEND_API_KEY) {
-      await notifyViaResend(email, industry, tasks);
-      return NextResponse.json({ ok: true, provider: "resend" });
-    }
+  // Run every configured provider ALONGSIDE each other (not either/or):
+  //   Resend     → emails you a notification
+  //   MailerLite → adds the lead to your list + fires your nurture sequence
+  const jobs: { name: string; run: () => Promise<void> }[] = [];
+  if (process.env.RESEND_API_KEY) jobs.push({ name: "resend", run: () => notifyViaResend(email, industry, tasks) });
+  if (process.env.MAILERLITE_API_KEY) jobs.push({ name: "mailerlite", run: () => subscribeViaMailerLite(email, industry, tasks) });
 
-    if (process.env.MAILERLITE_API_KEY) {
-      await subscribeViaMailerLite(email, industry, tasks);
-      return NextResponse.json({ ok: true, provider: "mailerlite" });
-    }
-
+  if (jobs.length === 0) {
     // No provider configured — succeed so the flow works locally.
     console.log("[subscribe stub]", { email, industry, tasks });
     return NextResponse.json({ ok: true, stub: true });
-  } catch (err) {
-    console.error("[subscribe] provider error:", err);
-    return NextResponse.json(
-      { ok: false, error: "We couldn't save your email just now. Please try again." },
-      { status: 502 }
-    );
   }
+
+  const results = await Promise.allSettled(jobs.map((j) => j.run()));
+  const succeeded = jobs.filter((_, i) => results[i].status === "fulfilled").map((j) => j.name);
+  const failed = jobs.filter((_, i) => results[i].status === "rejected").map((j) => j.name);
+
+  results.forEach((r, i) => {
+    if (r.status === "rejected") console.error(`[subscribe] ${jobs[i].name} failed:`, r.reason);
+  });
+
+  // As long as at least one destination accepted the lead, the user succeeds —
+  // we never lose a lead just because one provider hiccuped.
+  if (succeeded.length > 0) {
+    return NextResponse.json({ ok: true, providers: succeeded, failed: failed.length ? failed : undefined });
+  }
+
+  return NextResponse.json(
+    { ok: false, error: "We couldn't save your email just now. Please try again." },
+    { status: 502 }
+  );
 }
 
 async function notifyViaResend(email: string, industry: string, tasks: string[]) {
