@@ -47,6 +47,13 @@ export function shareUrl(state: SelectionState): string {
   return qs ? `${base}?${qs}` : base;
 }
 
+/** Direct link to the generated PDF of this plan. */
+export function planPdfUrl(state: SelectionState): string {
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const qs = encodeState(state);
+  return `${origin}/api/plan.pdf${qs ? `?${qs}` : ""}`;
+}
+
 /** Plain-text version of the full plan — for copy-to-clipboard / pasting into notes. */
 export function planToText(result: MatchResult): string {
   const lines: string[] = [];

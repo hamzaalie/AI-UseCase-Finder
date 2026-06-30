@@ -16,6 +16,7 @@ interface Payload {
   industry?: string;
   tasks?: string[];
   planUrl?: string;
+  planPdfUrl?: string;
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -43,8 +44,9 @@ export async function POST(req: NextRequest) {
   const email = (body.email ?? "").trim().toLowerCase();
   const industry = body.industry ?? "";
   const tasks = Array.isArray(body.tasks) ? body.tasks : [];
-  // Only accept a same-origin http(s) plan URL — never store arbitrary input.
+  // Only accept same-origin http(s) URLs — never store arbitrary input.
   const planUrl = isSafeUrl(body.planUrl, req) ? body.planUrl!.trim() : "";
+  const planPdfUrl = isSafeUrl(body.planPdfUrl, req) ? body.planPdfUrl!.trim() : "";
 
   if (!email || !EMAIL_RE.test(email)) {
     return NextResponse.json({ ok: false, error: "Please enter a valid email." }, { status: 400 });
@@ -55,7 +57,7 @@ export async function POST(req: NextRequest) {
   //   MailerLite → adds the lead to your list + fires your nurture sequence
   const jobs: { name: string; run: () => Promise<void> }[] = [];
   if (process.env.RESEND_API_KEY) jobs.push({ name: "resend", run: () => notifyViaResend(email, industry, tasks, planUrl) });
-  if (process.env.MAILERLITE_API_KEY) jobs.push({ name: "mailerlite", run: () => subscribeViaMailerLite(email, industry, tasks, planUrl) });
+  if (process.env.MAILERLITE_API_KEY) jobs.push({ name: "mailerlite", run: () => subscribeViaMailerLite(email, industry, tasks, planUrl, planPdfUrl) });
 
   if (jobs.length === 0) {
     // No provider configured — succeed so the flow works locally.
@@ -117,7 +119,13 @@ async function notifyViaResend(email: string, industry: string, tasks: string[],
   }
 }
 
-async function subscribeViaMailerLite(email: string, industry: string, tasks: string[], planUrl: string) {
+async function subscribeViaMailerLite(
+  email: string,
+  industry: string,
+  tasks: string[],
+  planUrl: string,
+  planPdfUrl: string
+) {
   const res = await fetch("https://connect.mailerlite.com/api/subscribers", {
     method: "POST",
     headers: {
@@ -127,7 +135,7 @@ async function subscribeViaMailerLite(email: string, industry: string, tasks: st
     },
     body: JSON.stringify({
       email,
-      fields: { industry, tasks: tasks.join(","), plan_url: planUrl },
+      fields: { industry, tasks: tasks.join(","), plan_url: planUrl, plan_pdf_url: planPdfUrl },
       ...(process.env.MAILERLITE_GROUP_ID ? { groups: [process.env.MAILERLITE_GROUP_ID] } : {}),
     }),
   });

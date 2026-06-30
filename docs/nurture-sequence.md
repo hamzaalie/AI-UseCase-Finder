@@ -6,9 +6,9 @@ is added (i.e. someone opts in on the results screen).
 **Voice:** warm, plain-language, a real person (Hamza / Netsol AI). No corporate
 consulting tone. Honest — including when *not* to use AI. Never invents numbers.
 
-**Personalization (MailerLite merge tags):** the tool stores three custom fields —
-`{$industry}`, `{$tasks}`, and `{$plan_url}` (a link back to the subscriber's exact
-plan, where they can view all the playbooks and Save-as-PDF). Use them where marked.
+**Personalization (MailerLite merge tags):** the tool stores four custom fields —
+`{$industry}`, `{$tasks}`, `{$plan_url}` (interactive plan page) and `{$plan_pdf_url}`
+(a one-click download of the plan as a generated PDF). Use them where marked.
 If a field is empty, MailerLite shows nothing, so keep sentences readable without them too.
 
 **How to set it up in MailerLite:**
@@ -29,9 +29,9 @@ Hi,
 Thanks for using the AI Use-Case Finder — here's the fuller version of your plan,
 as promised.
 
-**👉 [View & download your full plan →]({$plan_url})**
-(Open it any time, expand each use case for the full playbook, and use your browser's
-"Print / Save as PDF" to keep a copy.)
+**👉 [Download your full plan (PDF) →]({$plan_pdf_url})**
+(A polished PDF of your plan — opportunity score, every use case, and the full
+playbook for each. Or [view it online]({$plan_url}) to explore interactively.)
 
 You told me the things eating your time, and the tool ranked the AI use cases that
 actually fit a business like yours. Quick reminder of how to read it:

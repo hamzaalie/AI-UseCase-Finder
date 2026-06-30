@@ -6,11 +6,12 @@ interface Props {
   industry: string | null;
   tasks: string[];
   planUrl: string; // shareable link to this exact plan — emailed to the lead
+  planPdfUrl: string; // direct link to the generated PDF of this plan
 }
 
 type Status = "idle" | "loading" | "done" | "error";
 
-export default function EmailCapture({ industry, tasks, planUrl }: Props) {
+export default function EmailCapture({ industry, tasks, planUrl, planPdfUrl }: Props) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
 
@@ -22,7 +23,7 @@ export default function EmailCapture({ industry, tasks, planUrl }: Props) {
       const res = await fetch("/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, industry, tasks, planUrl }),
+        body: JSON.stringify({ email, industry, tasks, planUrl, planPdfUrl }),
       });
       setStatus(res.ok ? "done" : "error");
     } catch {
