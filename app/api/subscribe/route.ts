@@ -15,9 +15,22 @@ interface Payload {
   email: string;
   industry?: string;
   tasks?: string[];
+  planUrl?: string;
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/** Accept only an http(s) URL on the same host as the request — never arbitrary input. */
+function isSafeUrl(url: string | undefined, req: NextRequest): boolean {
+  if (!url) return false;
+  try {
+    const u = new URL(url);
+    if (u.protocol !== "http:" && u.protocol !== "https:") return false;
+    return u.host === req.nextUrl.host;
+  } catch {
+    return false;
+  }
+}
 
 export async function POST(req: NextRequest) {
   let body: Payload;
@@ -30,6 +43,8 @@ export async function POST(req: NextRequest) {
   const email = (body.email ?? "").trim().toLowerCase();
   const industry = body.industry ?? "";
   const tasks = Array.isArray(body.tasks) ? body.tasks : [];
+  // Only accept a same-origin http(s) plan URL — never store arbitrary input.
+  const planUrl = isSafeUrl(body.planUrl, req) ? body.planUrl!.trim() : "";
 
   if (!email || !EMAIL_RE.test(email)) {
     return NextResponse.json({ ok: false, error: "Please enter a valid email." }, { status: 400 });
@@ -39,8 +54,8 @@ export async function POST(req: NextRequest) {
   //   Resend     → emails you a notification
   //   MailerLite → adds the lead to your list + fires your nurture sequence
   const jobs: { name: string; run: () => Promise<void> }[] = [];
-  if (process.env.RESEND_API_KEY) jobs.push({ name: "resend", run: () => notifyViaResend(email, industry, tasks) });
-  if (process.env.MAILERLITE_API_KEY) jobs.push({ name: "mailerlite", run: () => subscribeViaMailerLite(email, industry, tasks) });
+  if (process.env.RESEND_API_KEY) jobs.push({ name: "resend", run: () => notifyViaResend(email, industry, tasks, planUrl) });
+  if (process.env.MAILERLITE_API_KEY) jobs.push({ name: "mailerlite", run: () => subscribeViaMailerLite(email, industry, tasks, planUrl) });
 
   if (jobs.length === 0) {
     // No provider configured — succeed so the flow works locally.
@@ -68,7 +83,7 @@ export async function POST(req: NextRequest) {
   );
 }
 
-async function notifyViaResend(email: string, industry: string, tasks: string[]) {
+async function notifyViaResend(email: string, industry: string, tasks: string[], planUrl: string) {
   // Sender must be a verified domain in production. The Resend sandbox sender
   // (onboarding@resend.dev) only delivers to your own account email — fine for testing.
   const from = process.env.LEAD_FROM_EMAIL || "AI Use-Case Finder <onboarding@resend.dev>";
@@ -92,6 +107,7 @@ async function notifyViaResend(email: string, industry: string, tasks: string[])
         `Email:    ${email}`,
         `Industry: ${industry || "(not provided)"}`,
         `Tasks:    ${tasks.length ? tasks.join(", ") : "(none)"}`,
+        `Plan:     ${planUrl || "(not provided)"}`,
       ].join("\n"),
     }),
   });
@@ -101,7 +117,7 @@ async function notifyViaResend(email: string, industry: string, tasks: string[])
   }
 }
 
-async function subscribeViaMailerLite(email: string, industry: string, tasks: string[]) {
+async function subscribeViaMailerLite(email: string, industry: string, tasks: string[], planUrl: string) {
   const res = await fetch("https://connect.mailerlite.com/api/subscribers", {
     method: "POST",
     headers: {
@@ -111,7 +127,7 @@ async function subscribeViaMailerLite(email: string, industry: string, tasks: st
     },
     body: JSON.stringify({
       email,
-      fields: { industry, tasks: tasks.join(",") },
+      fields: { industry, tasks: tasks.join(","), plan_url: planUrl },
       ...(process.env.MAILERLITE_GROUP_ID ? { groups: [process.env.MAILERLITE_GROUP_ID] } : {}),
     }),
   });

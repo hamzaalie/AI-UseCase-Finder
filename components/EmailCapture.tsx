@@ -5,11 +5,12 @@ import { FormEvent, useState } from "react";
 interface Props {
   industry: string | null;
   tasks: string[];
+  planUrl: string; // shareable link to this exact plan — emailed to the lead
 }
 
 type Status = "idle" | "loading" | "done" | "error";
 
-export default function EmailCapture({ industry, tasks }: Props) {
+export default function EmailCapture({ industry, tasks, planUrl }: Props) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
 
@@ -21,7 +22,7 @@ export default function EmailCapture({ industry, tasks }: Props) {
       const res = await fetch("/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, industry, tasks }),
+        body: JSON.stringify({ email, industry, tasks, planUrl }),
       });
       setStatus(res.ok ? "done" : "error");
     } catch {

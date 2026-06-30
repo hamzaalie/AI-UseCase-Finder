@@ -10,7 +10,7 @@ import Checklist from "@/components/Checklist";
 import EmailCapture from "@/components/EmailCapture";
 import Footer from "@/components/Footer";
 import { getMatches, Ratings, Severity } from "@/lib/match";
-import { decodeState, encodeState } from "@/lib/share";
+import { decodeState, encodeState, shareUrl } from "@/lib/share";
 
 export default function Page() {
   const [industry, setIndustry] = useState<string | null>(null);
@@ -103,7 +103,7 @@ export default function Page() {
           <Results result={result} selection={{ industry, ratings }} />
           <Checklist solutionIds={orderedIds} />
           <div className="border-t border-ink/10 py-8 print:hidden">
-            <EmailCapture industry={industry} tasks={ratedTaskIds} />
+            <EmailCapture industry={industry} tasks={ratedTaskIds} planUrl={shareUrl({ industry, ratings })} />
           </div>
           <button
             type="button"
