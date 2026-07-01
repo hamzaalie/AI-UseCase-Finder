@@ -38,6 +38,7 @@ Copy `.env.example` to `.env.local`. **Everything is optional** — with nothing
 | `NEXT_PUBLIC_BOOKING_URL` | Calendly/Cal.com link for the soft booking bridge. Hidden if unset. |
 | `RESEND_API_KEY` + `LEAD_NOTIFY_EMAIL` | **Option A** — emails you whenever someone leaves their address. `LEAD_FROM_EMAIL` must be a verified domain in production (sandbox sender only delivers to your own Resend account email). |
 | `MAILERLITE_API_KEY` (+ `MAILERLITE_GROUP_ID`) | **Option B** — adds the lead to a MailerLite list so your sequence fires. |
+| `ANTHROPIC_API_KEY` | Optional AI layer for the "describe your problem" field — Claude (Haiku) reads free text, maps it to your real use cases, and writes a personalized message. Without it, the field falls back to keyword matching. |
 
 The subscribe route ([`app/api/subscribe/route.ts`](./app/api/subscribe/route.ts)) auto-detects which provider is configured — set **one** (or neither). No SDKs, just `fetch`, so it deploys with zero config.
 

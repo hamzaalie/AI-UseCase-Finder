@@ -14,12 +14,13 @@ interface Props {
   selection: SelectionState;
   planUrl: string;
   planPdfUrl: string;
+  aiMessage?: string | null;
 }
 
 const FREE_COUNT = 3;
 const UNLOCK_KEY = "aiuf:unlocked:v1";
 
-export default function Results({ result, selection, planUrl, planPdfUrl }: Props) {
+export default function Results({ result, selection, planUrl, planPdfUrl, aiMessage }: Props) {
   const [unlocked, setUnlocked] = useState(false);
   const bookingUrl = process.env.NEXT_PUBLIC_BOOKING_URL;
 
@@ -56,6 +57,13 @@ export default function Results({ result, selection, planUrl, planPdfUrl }: Prop
       <p className="mt-2 max-w-xl text-muted" aria-live="polite">
         {result.summary}
       </p>
+
+      {aiMessage && (
+        <div className="mt-5 rounded-2xl border border-structure/30 bg-structure/5 p-5">
+          <p className="text-[11px] font-bold uppercase tracking-wider text-structure">What I heard</p>
+          <p className="mt-1.5 text-ink/90">{aiMessage}</p>
+        </div>
+      )}
 
       <div className="mt-5">
         <OpportunityScore result={result} />
