@@ -5,13 +5,15 @@ import { FormEvent, useState } from "react";
 interface Props {
   industry: string | null;
   tasks: string[];
-  planUrl: string; // shareable link to this exact plan — emailed to the lead
-  planPdfUrl: string; // direct link to the generated PDF of this plan
+  planUrl: string;
+  planPdfUrl: string;
+  lockedCount: number; // how many recommendations are still locked
+  onSuccess: () => void;
 }
 
-type Status = "idle" | "loading" | "done" | "error";
+type Status = "idle" | "loading" | "error";
 
-export default function EmailCapture({ industry, tasks, planUrl, planPdfUrl }: Props) {
+export default function EmailCapture({ industry, tasks, planUrl, planPdfUrl, lockedCount, onSuccess }: Props) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
 
@@ -25,30 +27,29 @@ export default function EmailCapture({ industry, tasks, planUrl, planPdfUrl }: P
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, industry, tasks, planUrl, planPdfUrl }),
       });
-      setStatus(res.ok ? "done" : "error");
+      if (res.ok) {
+        onSuccess();
+      } else {
+        setStatus("error");
+      }
     } catch {
       setStatus("error");
     }
   }
 
-  if (status === "done") {
-    return (
-      <section className="rounded-2xl border border-easy/30 bg-easy/5 p-6">
-        <h2 className="font-serif text-2xl">You're in. 🎉</h2>
-        <p className="mt-2 text-muted">
-          The full playbook for your top picks is on its way. Check your inbox.
-        </p>
-      </section>
-    );
-  }
-
   return (
-    <section className="rounded-2xl border border-ink/10 bg-white/70 p-6">
-      <h2 className="font-serif text-2xl">Want the full playbook for your top 3?</h2>
-      <p className="mt-2 text-muted">
-        Drop your email and I'll send a deeper guide — tools, templates and the exact setup. No spam.
+    <section className="rounded-2xl border-2 border-dashed border-easy/50 bg-easy/5 p-6 text-center">
+      <p className="text-2xl" aria-hidden="true">
+        🔓
       </p>
-      <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-3 sm:flex-row">
+      <h2 className="mt-2 font-serif text-2xl">
+        {lockedCount > 0 ? `Unlock ${lockedCount} more recommendation${lockedCount > 1 ? "s" : ""}` : "Get your full plan"}
+      </h2>
+      <p className="mx-auto mt-2 max-w-md text-muted">
+        Enter your email to reveal the rest of your roadmap, get a downloadable PDF, and a shareable
+        link to revisit anytime. No spam — just your plan.
+      </p>
+      <form onSubmit={handleSubmit} className="mx-auto mt-4 flex max-w-md flex-col gap-3 sm:flex-row">
         <input
           type="email"
           required
@@ -56,14 +57,14 @@ export default function EmailCapture({ industry, tasks, planUrl, planPdfUrl }: P
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@business.com"
           aria-label="Your email address"
-          className="flex-1 rounded-xl border border-ink/20 bg-white px-4 py-3 outline-none focus:border-accent"
+          className="flex-1 rounded-xl border border-ink/20 bg-white px-4 py-3 outline-none focus:border-easy"
         />
         <button
           type="submit"
           disabled={status === "loading"}
-          className="rounded-xl bg-accent px-6 py-3 font-semibold text-white transition-opacity disabled:opacity-50"
+          className="rounded-xl bg-easy px-6 py-3 font-semibold text-white transition-opacity disabled:opacity-50"
         >
-          {status === "loading" ? "Sending…" : "Send me the playbook"}
+          {status === "loading" ? "Unlocking…" : "Get full results"}
         </button>
       </form>
       {status === "error" && (

@@ -13,47 +13,58 @@ export interface Tool {
   name: string;
   url: string;
   tier: ToolTier;
-  note?: string; // why this one / what it's good for
+  note?: string;
 }
 
 export interface StackLayer {
-  layer: string; // role in the chain, e.g. "Capture", "Brain", "Action"
-  tool: string; // concrete tool name
-  does: string; // what this layer actually does
+  layer: string;
+  tool: string;
+  does: string;
 }
 
 export interface Phase {
-  title: string; // e.g. "Week 1 — get it working for one channel"
-  detail: string; // what you actually do in this phase
+  title: string;
+  detail: string;
+}
+
+/** One level of investment for the same use case. */
+export interface Tier {
+  level: "Quick Win" | "Workflow Fix" | "Built right";
+  time: string; // honest effort/time
+  what: string; // what you actually do at this level
+  impact: string; // HONEST framing — no invented percentages
 }
 
 export interface Playbook {
-  howItWorks: string; // the real mechanism, plain English, specific
-  stack: StackLayer[]; // the concrete tool chain
-  phases: Phase[]; // realistic phased rollout
-  watchOuts: string[]; // pitfalls that quietly kill these projects
-  worthItWhen: string; // honest: when it genuinely pays off
-  skipIf: string; // honest: when NOT to bother
-  metric: string; // the one number to watch (their own data — never fabricated)
-  timeToValue: string; // realistic, e.g. "Live in a weekend; first wins within a week"
+  howItWorks: string;
+  stack: StackLayer[];
+  phases: Phase[];
+  watchOuts: string[];
+  worthItWhen: string;
+  skipIf: string;
+  metric: string;
+  timeToValue: string;
 }
 
 export interface Solution {
-  id: string; // matches a task id it solves
-  name: string; // the system's name
+  id: string;
+  name: string;
   category: Category;
-  what: string; // plain-English what it does
-  why: string; // why it matters / the payoff
-  effort: Effort; // quickwin or project (drives the split)
-  difficulty: Difficulty; // diy / weekend / build (honest labelling)
-  impact: number; // base impact 1-10 (used in scoring as a tiebreaker / floor)
-  setupTime: string; // honest range, never fabricated
-  cost: string; // honest range, never fabricated money loss
-  tools: Tool[]; // concrete, real tools the owner can actually use
-  synergies?: string[]; // other solution ids that amplify this one when also chosen
-  honestNote?: string; // optional: when AI may NOT be needed
-  notReallyAI?: boolean; // true when the honest answer is "this isn't really AI"
-  playbook: Playbook; // the deep, specific implementation detail
+  problem: string; // THE PROBLEM — one punchy, honest line
+  helps: string[]; // How AI helps — 3 scannable points
+  what: string;
+  why: string;
+  effort: Effort;
+  difficulty: Difficulty;
+  impact: number;
+  setupTime: string;
+  cost: string;
+  tools: Tool[];
+  tiers: Tier[]; // Quick Win / Workflow Fix / Built right
+  synergies?: string[];
+  honestNote?: string;
+  notReallyAI?: boolean;
+  playbook: Playbook;
 }
 
 export const SOLUTIONS: Record<string, Solution> = {
@@ -61,6 +72,12 @@ export const SOLUTIONS: Record<string, Solution> = {
     id: "leadreply",
     name: "Instant lead responder",
     category: "Sales & leads",
+    problem: "Enquiries land while you're busy, and by the time you reply the lead has already messaged someone else.",
+    helps: [
+      "Sends a personal reply within a minute, day or night",
+      "Answers the 2–3 things every lead asks, with a booking link attached",
+      "Flags anything tricky to you instead of guessing",
+    ],
     what: "Every enquiry gets a personal, on-brand reply in under a minute — day or night — that answers the obvious questions and hands them a booking link.",
     why: "Responding within 5 minutes makes a lead far more likely to convert than responding an hour later. This makes you the business that always answers first, without you watching the inbox.",
     effort: "project",
@@ -74,6 +91,11 @@ export const SOLUTIONS: Record<string, Solution> = {
       { name: "Make", url: "https://make.com", tier: "freemium", note: "Trigger the instant reply" },
       { name: "Cal.com", url: "https://cal.com", tier: "freemium", note: "Attach a booking link" },
     ],
+    tiers: [
+      { level: "Quick Win", time: "This week", what: "Write one strong auto-reply template with your top answers + a booking link, and set it as an autoresponder on your form/inbox.", impact: "No enquiry sits unanswered — even the first reply beats going silent." },
+      { level: "Workflow Fix", time: "A weekend", what: "Form → automation (Make/n8n) → AI drafts a tailored reply from the enquiry + your FAQ, sends it, and books the call.", impact: "Personal replies in under a minute without you touching the inbox." },
+      { level: "Built right", time: "2–3 weeks", what: "A robust responder wired to your CRM with routing rules, edge-case handling, and logging — fully hands-off.", impact: "Reliable speed-to-lead at scale; nothing slips even on your busiest days." },
+    ],
     playbook: {
       howItWorks:
         "Your contact form (or inbox) becomes the trigger. The moment an enquiry lands, an automation reads it, drops the details into a draft using an AI model, and sends a tailored reply that greets them by name, answers the 2–3 things everyone asks, and links to your calendar. Genuinely tricky enquiries get flagged to you instead of auto-answered.",
@@ -86,7 +108,7 @@ export const SOLUTIONS: Record<string, Solution> = {
       phases: [
         { title: "Day 1 — the template", detail: "Write the 3 questions every lead asks and the perfect answer to each. This becomes the AI's source material so it never invents facts." },
         { title: "Weekend — wire it up", detail: "Connect form → Make → AI draft → send. Test with 5 fake enquiries until the tone is yours." },
-        { title: "Week 2 — add the safety net", detail: "Add a rule: if the enquiry mentions price disputes, complaints, or anything off-script, route it straight to you instead of auto-replying." },
+        { title: "Week 2 — add the safety net", detail: "Add a rule: if the enquiry mentions price disputes, complaints, or anything off-script, route it straight to you." },
       ],
       watchOuts: [
         "Don't let the AI quote prices or make promises — feed it only approved answers, or it will improvise.",
@@ -104,6 +126,12 @@ export const SOLUTIONS: Record<string, Solution> = {
     id: "followup",
     name: "Automatic follow-up sequence",
     category: "Sales & leads",
+    problem: "Leads go quiet, life gets busy, and the deals that just needed one more nudge quietly die in your inbox.",
+    helps: [
+      "Chases quiet leads on day 1, 3 and 7 automatically",
+      "Each message is short and human, not 'just checking in'",
+      "Stops the instant they reply or book — nobody gets over-chased",
+    ],
     what: "Leads who go quiet get a short, friendly nudge on day 1, 3 and 7 — automatically — and the sequence stops the instant they reply or book.",
     why: "Most sales need several touches, but most owners stop after one. This closes the gap between 'they went quiet' and 'I forgot to chase' without you tracking anyone manually.",
     effort: "project",
@@ -116,6 +144,11 @@ export const SOLUTIONS: Record<string, Solution> = {
       { name: "MailerLite", url: "https://mailerlite.com", tier: "freemium", note: "Automations on free tier" },
       { name: "Brevo", url: "https://brevo.com", tier: "freemium", note: "Email + SMS sequences" },
       { name: "n8n", url: "https://n8n.io", tier: "free", note: "Self-host the logic for free" },
+    ],
+    tiers: [
+      { level: "Quick Win", time: "Today", what: "Write 3 short follow-up messages and set a calendar reminder to send them manually to anyone who goes quiet.", impact: "You stop forgetting the follow-up that closes the deal." },
+      { level: "Workflow Fix", time: "A weekend", what: "Load the 3 messages into an email tool as a timed sequence with an exit-on-reply rule.", impact: "Every lead gets chased on schedule, hands-off, with no awkward over-chasing." },
+      { level: "Built right", time: "2–3 weeks", what: "Branching sequences by lead type, across email + SMS, wired to your CRM with smart exit conditions.", impact: "A follow-up engine that adapts to each lead — the compounding win over time." },
     ],
     playbook: {
       howItWorks:
@@ -146,6 +179,12 @@ export const SOLUTIONS: Record<string, Solution> = {
     id: "faq",
     name: "24/7 question answerer",
     category: "Customer service",
+    problem: "The same handful of questions interrupt your day on repeat — and go unanswered every evening and weekend.",
+    helps: [
+      "Answers repeat questions instantly, around the clock",
+      "Trained only on your prices/hours/policies, so it can't make things up",
+      "Passes anything complex or sensitive straight to you",
+    ],
     what: "A site assistant trained only on your prices, hours, policies and FAQs answers repeat questions instantly and quietly passes anything complex to you.",
     why: "Customers get correct answers in seconds at midnight; you get a quieter inbox and fewer 'are you open?' interruptions.",
     effort: "project",
@@ -160,6 +199,11 @@ export const SOLUTIONS: Record<string, Solution> = {
     ],
     honestNote:
       "If you only get a handful of the same 3 questions, you may not need AI here — just put clear answers on your website first.",
+    tiers: [
+      { level: "Quick Win", time: "An afternoon", what: "Write your top 15–20 questions and answers into a clear FAQ page on your site.", impact: "Deflects a real share of questions instantly — often enough on its own." },
+      { level: "Workflow Fix", time: "A few days", what: "Feed that FAQ doc into a chat widget locked to 'answer only from sources', with a handoff to you for anything else.", impact: "After-hours questions get answered; your inbox gets noticeably quieter." },
+      { level: "Built right", time: "2–4 weeks", what: "An assistant trained across your full knowledge base, wired into your site and inbox with escalation + review of transcripts.", impact: "Consistent, correct answers at any hour without adding a support hire." },
+    ],
     playbook: {
       howItWorks:
         "You give the assistant a single source of truth — a doc with your real prices, hours, policies and answers. It answers only from that document (so it can't invent facts) and, when it's unsure or the question is sensitive, it collects the visitor's details and hands off to you rather than guessing.",
@@ -189,6 +233,12 @@ export const SOLUTIONS: Record<string, Solution> = {
     id: "scheduling",
     name: "Self-service booking",
     category: "Operations",
+    problem: "Booking a simple appointment turns into six emails of 'does Tuesday work?' — and people no-show anyway.",
+    helps: [
+      "People self-book from your real, live availability",
+      "Confirmations and reminders fire automatically",
+      "Reschedules and cancellations update everything for you",
+    ],
     what: "People pick a slot from your real, live availability. Confirmations, reminders and reschedules all fire automatically.",
     why: "The six-email 'does Tuesday work?' dance just ends — and no-shows drop because reminders go out on their own.",
     effort: "quickwin",
@@ -204,6 +254,11 @@ export const SOLUTIONS: Record<string, Solution> = {
     honestNote:
       "This isn't really AI — it's a free booking tool (Calendly/Cal.com). Set it up yourself in 20 minutes before paying anyone.",
     notReallyAI: true,
+    tiers: [
+      { level: "Quick Win", time: "20 minutes", what: "Create a free Cal.com/Calendly page, connect your calendar, turn on reminders, and share the link everywhere.", impact: "The scheduling back-and-forth ends today; reminders cut no-shows." },
+      { level: "Workflow Fix", time: "An hour", what: "Add qualifying questions, buffers, and auto-routing to the right meeting type or team member.", impact: "Only the right people, in the right slots, with prep time protected." },
+      { level: "Built right", time: "1–2 weeks", what: "Booking wired into your CRM/intake with follow-ups and no-show recovery built in.", impact: "A booking flow that also nurtures and recovers — not just a calendar." },
+    ],
     playbook: {
       howItWorks:
         "You connect your calendar once. The tool shows only your genuinely free slots, lets people book themselves, writes the event to your calendar, and sends automatic confirmations + reminders by email/SMS. Reschedules and cancellations update everything without you touching it.",
@@ -232,6 +287,12 @@ export const SOLUTIONS: Record<string, Solution> = {
     id: "invoicing",
     name: "Automatic invoice chaser",
     category: "Admin & finance",
+    problem: "You've done the work but the money's still out there — and chasing it is awkward and keeps slipping.",
+    helps: [
+      "Sends polite, escalating reminders on a schedule (day 7, 14, 21)",
+      "Stops automatically the moment payment clears",
+      "Removes the awkward 'just chasing this' conversation entirely",
+    ],
     what: "Polite, escalating payment reminders fire on a schedule after an invoice goes unpaid — day 7, 14, 21 — until it's settled.",
     why: "You get paid faster, your cash flow steadies, and you never have to send the awkward 'just chasing this' email yourself.",
     effort: "quickwin",
@@ -245,6 +306,11 @@ export const SOLUTIONS: Record<string, Solution> = {
     ],
     honestNote: "Most invoicing apps already do this for free — switch it on before buying a tool.",
     notReallyAI: true,
+    tiers: [
+      { level: "Quick Win", time: "30 minutes", what: "Turn on automatic reminders in your existing invoicing app and write the 3 reminder messages once.", impact: "Overdue invoices chase themselves — you stop losing time and nerve on it." },
+      { level: "Workflow Fix", time: "An hour", what: "Add one-click payment links to reminders and a Slack/email alert when something stays unpaid past day 21.", impact: "Faster payment and nothing slips past the awkward stage unnoticed." },
+      { level: "Built right", time: "1–2 weeks", what: "Reminders + dunning wired to your accounting system with escalation rules and reporting.", impact: "Steadier cash flow with zero manual chasing across every client." },
+    ],
     playbook: {
       howItWorks:
         "Your invoicing tool already tracks which invoices are overdue. You turn on its reminder feature, write three reminder messages once (gentle → firmer → final), and set them to send on a schedule. The tool stops the moment payment clears.",
@@ -271,6 +337,12 @@ export const SOLUTIONS: Record<string, Solution> = {
     id: "content",
     name: "Content engine",
     category: "Marketing",
+    problem: "You know content would help, but the blank page wins every busy week and you go quiet for months.",
+    helps: [
+      "Turns one idea into a week of posts, emails and descriptions",
+      "Writes in your voice using a reusable brand brief",
+      "Kills the blank-page problem so marketing actually happens",
+    ],
     what: "Turn one idea into a week of posts, emails and product descriptions — in your voice, not generic AI mush.",
     why: "Consistency without the daily blank-page battle, so marketing keeps happening even in your busy weeks.",
     effort: "quickwin",
@@ -282,6 +354,11 @@ export const SOLUTIONS: Record<string, Solution> = {
     tools: [
       { name: "Claude", url: "https://claude.ai", tier: "freemium", note: "Best for on-brand long-form" },
       { name: "ChatGPT", url: "https://chat.openai.com", tier: "freemium", note: "Fast idea-to-draft" },
+    ],
+    tiers: [
+      { level: "Quick Win", time: "Today", what: "Write a one-page brand brief (voice, audience, examples) and use it to turn one idea into a week of drafts you edit.", impact: "Content starts happening again — the blank page stops winning." },
+      { level: "Workflow Fix", time: "A few hours", what: "Build reusable prompt templates per format and a simple content calendar you batch weekly.", impact: "A repeatable rhythm — a week of on-brand content in ~30 minutes." },
+      { level: "Built right", time: "1–2 weeks", what: "A repurposing pipeline that turns each long piece (call, blog, talk) into posts, emails and captions automatically.", impact: "One input, a week of channels — consistency without the grind." },
     ],
     playbook: {
       howItWorks:
@@ -312,6 +389,12 @@ export const SOLUTIONS: Record<string, Solution> = {
     id: "data",
     name: "No-more-copy-paste connector",
     category: "Operations",
+    problem: "You re-type the same information between tools all day — it's boring, error-prone, and never ends.",
+    helps: [
+      "Moves information between your tools automatically",
+      "No more re-typing, no more 'forgot to update the sheet'",
+      "Kills the most error-prone half of your admin",
+    ],
     what: "Information flows between your tools automatically — form to CRM to spreadsheet to inbox — instead of you re-typing it.",
     why: "It kills the most boring, error-prone half of admin and removes the 'I forgot to update the sheet' failure mode.",
     effort: "project",
@@ -324,6 +407,11 @@ export const SOLUTIONS: Record<string, Solution> = {
       { name: "Make", url: "https://make.com", tier: "freemium", note: "Visual, generous free ops" },
       { name: "Zapier", url: "https://zapier.com", tier: "freemium", note: "Most integrations" },
       { name: "n8n", url: "https://n8n.io", tier: "free", note: "Self-host for free" },
+    ],
+    tiers: [
+      { level: "Quick Win", time: "An hour", what: "Turn on the native integration between the two tools you copy between most (many already connect).", impact: "One painful copy-paste route disappears immediately." },
+      { level: "Workflow Fix", time: "A weekend", what: "Build one automation (Make/Zapier) for your most frequent, most error-prone data route and test it on real data.", impact: "Typos and forgotten updates gone on that flow; hours back each week." },
+      { level: "Built right", time: "2–4 weeks", what: "Your key tools connected end-to-end with error alerts and monitoring.", impact: "The boring half of admin runs itself, reliably, across the business." },
     ],
     playbook: {
       howItWorks:
@@ -354,6 +442,12 @@ export const SOLUTIONS: Record<string, Solution> = {
     id: "reporting",
     name: "Monday-morning report",
     category: "Operations",
+    problem: "You run on gut feel because pulling the numbers together is a chore you never get around to.",
+    helps: [
+      "Builds a short weekly summary of your key numbers itself",
+      "Lands in your inbox every Monday, no effort",
+      "Compares to last week so you spot trouble early",
+    ],
     what: "A short summary of your key numbers — leads, bookings, revenue — builds itself and lands in your inbox every Monday.",
     why: "You make decisions on data instead of gut feeling, and you spot a bad week while you can still fix it.",
     effort: "project",
@@ -365,6 +459,11 @@ export const SOLUTIONS: Record<string, Solution> = {
     tools: [
       { name: "Google Sheets", url: "https://sheets.google.com", tier: "free", note: "The data hub" },
       { name: "Make", url: "https://make.com", tier: "freemium", note: "Schedule the weekly send" },
+    ],
+    tiers: [
+      { level: "Quick Win", time: "An hour", what: "Pick the 4 numbers you'd actually act on and track them in one simple spreadsheet weekly.", impact: "You start seeing trends instead of guessing." },
+      { level: "Workflow Fix", time: "A weekend", what: "Automate a Monday email that pulls this week vs. last week from the sheet.", impact: "The report builds and sends itself — decisions on data, zero effort." },
+      { level: "Built right", time: "2–3 weeks", what: "A live dashboard fed automatically from your tools, with AI commentary on what changed and why.", impact: "Always-on visibility with plain-English 'here's what to watch'." },
     ],
     playbook: {
       howItWorks:
@@ -394,6 +493,12 @@ export const SOLUTIONS: Record<string, Solution> = {
     id: "quoting",
     name: "Fast quote / proposal drafts",
     category: "Sales & leads",
+    problem: "Proposals eat hours you don't have, so they pile up — and the slow reply costs you the deal.",
+    helps: [
+      "Turns a short brief into a clean, on-brand draft in minutes",
+      "You keep control of pricing; AI handles the words",
+      "You send same-day while competitors are still typing",
+    ],
     what: "Feed in the brief, get a clean, professional, on-brand proposal draft in minutes instead of hours — you just finalise and send.",
     why: "You send while competitors are still typing, and you stop dreading proposal-writing, so fewer leads sit waiting.",
     effort: "quickwin",
@@ -405,6 +510,11 @@ export const SOLUTIONS: Record<string, Solution> = {
     tools: [
       { name: "Claude", url: "https://claude.ai", tier: "freemium", note: "Turn a brief into a draft" },
       { name: "PandaDoc", url: "https://pandadoc.com", tier: "freemium", note: "Templated proposals + e-sign" },
+    ],
+    tiers: [
+      { level: "Quick Win", time: "Today", what: "Turn your best past proposal into a template and use AI to fill it from a short brief for each lead.", impact: "Proposals go from hours to minutes — you send same-day." },
+      { level: "Workflow Fix", time: "A few hours", what: "Add a quick intake form that feeds the brief straight into your draft, plus e-signature.", impact: "Brief → draft → signed with far less friction and faster wins." },
+      { level: "Built right", time: "1–2 weeks", what: "Proposals generated from your CRM data with pricing logic and tracking on opens/signs.", impact: "A quoting machine that also tells you which proposals are landing." },
     ],
     playbook: {
       howItWorks:
@@ -436,6 +546,12 @@ export const SOLUTIONS: Record<string, Solution> = {
     id: "reviews",
     name: "Review & referral asker",
     category: "Marketing",
+    problem: "You do great work but forget to ask — so your reviews don't reflect how good you actually are.",
+    helps: [
+      "Fires a warm request at the perfect happy moment",
+      "One-tap link removes all friction to leaving a review",
+      "Runs on autopilot so you never forget to ask",
+    ],
     what: "An automated, personal request for a review or referral fires at the perfect moment — right after a happy outcome.",
     why: "More reviews lift your local ranking and trust, which drives more inbound — and it all runs on autopilot at the moment people are happiest.",
     effort: "quickwin",
@@ -447,6 +563,11 @@ export const SOLUTIONS: Record<string, Solution> = {
     tools: [
       { name: "Make", url: "https://make.com", tier: "freemium", note: "Fire the request at the right moment" },
       { name: "Google Business", url: "https://business.google.com", tier: "free", note: "Where the review lands" },
+    ],
+    tiers: [
+      { level: "Quick Win", time: "An hour", what: "Write one warm request message with a direct review link and send it manually after each happy job.", impact: "More reviews start landing because you finally, consistently ask." },
+      { level: "Workflow Fix", time: "A few hours", what: "Automate the request to fire 1–2 days after a job is marked complete.", impact: "Reviews accumulate on autopilot at exactly the right moment." },
+      { level: "Built right", time: "1–2 weeks", what: "Smart timing by job type, referral asks layered in, wired to your CRM with tracking.", impact: "A steady review + referral flywheel feeding your inbound." },
     ],
     playbook: {
       howItWorks:
@@ -477,6 +598,12 @@ export const SOLUTIONS: Record<string, Solution> = {
     id: "intake",
     name: "Smart intake & qualification",
     category: "Sales & leads",
+    problem: "Too many calls go nowhere because the person was never a real fit — draining your scarce time.",
+    helps: [
+      "Asks 3–4 sharp questions before anyone books",
+      "Routes good-fit leads straight to your calendar",
+      "Sends poor-fit ones a helpful off-ramp — you skip the call",
+    ],
     what: "A few sharp questions sort serious buyers from browsers before they ever reach your calendar, routing only the right people to you.",
     why: "You spend your scarce live time only on people who can actually say yes, instead of burning calls on tyre-kickers.",
     effort: "project",
@@ -488,6 +615,11 @@ export const SOLUTIONS: Record<string, Solution> = {
     tools: [
       { name: "Tally", url: "https://tally.so", tier: "free", note: "Conditional qualifying questions" },
       { name: "Typeform", url: "https://typeform.com", tier: "freemium", note: "Polished intake flow" },
+    ],
+    tiers: [
+      { level: "Quick Win", time: "An hour", what: "Add 3 qualifying questions to your contact/booking form so you can see fit before you reply.", impact: "You stop walking into calls blind about budget and fit." },
+      { level: "Workflow Fix", time: "A weekend", what: "Add branching logic: good fits → booking page, poor fits → a helpful off-ramp email.", impact: "Only qualified people reach your calendar; dead-end calls drop." },
+      { level: "Built right", time: "2–3 weeks", what: "Scored intake wired to your CRM that prioritises hot leads and routes by type.", impact: "Your live time goes only to the leads most likely to say yes." },
     ],
     playbook: {
       howItWorks:
@@ -518,6 +650,12 @@ export const SOLUTIONS: Record<string, Solution> = {
     id: "notes",
     name: "Call & meeting summariser",
     category: "Operations",
+    problem: "You're scribbling during calls instead of listening, and follow-ups slip through the cracks afterwards.",
+    helps: [
+      "Turns messy notes or recordings into clean summaries",
+      "Produces a clear next-step list every time",
+      "Lets you be present in the call instead of writing",
+    ],
     what: "Turns messy call notes or recordings into clean summaries and clear next-step lists — automatically, right after the call.",
     why: "Nothing important slips through the cracks, follow-ups actually happen, and you're present in the call instead of scribbling.",
     effort: "quickwin",
@@ -529,6 +667,11 @@ export const SOLUTIONS: Record<string, Solution> = {
     tools: [
       { name: "Fireflies", url: "https://fireflies.ai", tier: "freemium", note: "Records + summarises calls" },
       { name: "Claude", url: "https://claude.ai", tier: "freemium", note: "Paste notes → clean summary" },
+    ],
+    tiers: [
+      { level: "Quick Win", time: "Today", what: "After a call, paste your rough notes into AI with a fixed prompt to get a summary + next steps.", impact: "Clean write-ups in seconds; nothing forgotten after the call." },
+      { level: "Workflow Fix", time: "An hour", what: "Add a notetaker that auto-records and summarises calls into your standard format.", impact: "You stay present in calls; summaries appear on their own." },
+      { level: "Built right", time: "1–2 weeks", what: "Summaries auto-saved to your CRM with action items pushed into your follow-up/task system.", impact: "Every call turns into tracked next steps that actually get done." },
     ],
     playbook: {
       howItWorks:
@@ -555,11 +698,16 @@ export const SOLUTIONS: Record<string, Solution> = {
     },
   },
 
-  // ---- Added in the pro expansion ----
   socials: {
     id: "socials",
     name: "Social posting on autopilot",
     category: "Marketing",
+    problem: "You mean to post, then go quiet for weeks — and the audience you built slowly forgets you.",
+    helps: [
+      "Schedules a week of posts across your channels at once",
+      "Repurposes content you already have",
+      "Keeps your feed alive even in weeks you don't open the apps",
+    ],
     what: "A batch of posts gets scheduled across your channels for the week, repurposed from content you already have.",
     why: "You stay visible without living inside the apps every day, so the audience you've built doesn't go cold.",
     effort: "quickwin",
@@ -574,6 +722,11 @@ export const SOLUTIONS: Record<string, Solution> = {
     ],
     honestNote:
       "Scheduling itself isn't AI — pair a free scheduler with the Content engine and you've got the whole loop for free.",
+    tiers: [
+      { level: "Quick Win", time: "An hour", what: "Batch a week of posts (use the Content engine) and schedule them in a free tool.", impact: "Your feed stays active even on weeks you're heads-down." },
+      { level: "Workflow Fix", time: "A few hours", what: "Add an evergreen queue that recycles your best posts on rotation.", impact: "Consistent presence with ~30 minutes of upkeep a week." },
+      { level: "Built right", time: "1–2 weeks", what: "A content-to-schedule pipeline that repurposes long content into a full week across channels.", impact: "Always-on visibility from one input — no daily app-juggling." },
+    ],
     playbook: {
       howItWorks:
         "Once a week you batch-create posts (ideally with the Content engine), drop them into a scheduler, and it publishes them to your chosen platforms at set times — so your feed stays alive even in weeks you don't open the apps.",
@@ -602,6 +755,12 @@ export const SOLUTIONS: Record<string, Solution> = {
     id: "support",
     name: "Support inbox triage",
     category: "Customer service",
+    problem: "Support messages pile up faster than you can clear them, and the urgent ones get buried.",
+    helps: [
+      "Sorts, tags and prioritises incoming messages",
+      "Drafts a suggested reply from your help docs",
+      "You review and send in a fraction of the time",
+    ],
     what: "Incoming messages get sorted, tagged and a draft reply suggested, so you clear the queue in a fraction of the time.",
     why: "Faster, more consistent answers without hiring a support person — and the urgent stuff surfaces first instead of getting buried.",
     effort: "project",
@@ -616,6 +775,11 @@ export const SOLUTIONS: Record<string, Solution> = {
     ],
     honestNote:
       "If your volume is low, clear templates and saved replies may be all you need before adding AI.",
+    tiers: [
+      { level: "Quick Win", time: "An afternoon", what: "Build saved replies for your 5 most common message types.", impact: "Most of the repetitive answering time disappears — no AI needed yet." },
+      { level: "Workflow Fix", time: "A weekend", what: "Add auto-tagging/prioritisation and AI-suggested replies you approve before sending.", impact: "Clear the queue faster with the urgent stuff surfaced first." },
+      { level: "Built right", time: "2–4 weeks", what: "A triage system wired to your help docs and product, with routing and analytics.", impact: "Support scales with volume without adding a hire." },
+    ],
     playbook: {
       howItWorks:
         "Incoming support messages flow into a shared inbox. An automation classifies each one (billing, how-to, bug, urgent), tags and prioritises it, and an AI drafts a suggested reply from your help docs. You review and send with one click — you stay in control, but the heavy lifting is done.",
@@ -645,6 +809,12 @@ export const SOLUTIONS: Record<string, Solution> = {
     id: "onboarding",
     name: "Client onboarding flow",
     category: "Operations",
+    problem: "Every new client is a scramble of manual steps, and the experience comes out different each time.",
+    helps: [
+      "Fires welcome, forms, contract and first task in order",
+      "Every client gets the same polished start",
+      "You stop forgetting steps and look bigger than you are",
+    ],
     what: "A new client triggers welcome emails, intake forms, contracts and the first task — all in the right order, automatically.",
     why: "Every client gets the same polished, professional start, you stop forgetting steps, and you look bigger than you are.",
     effort: "project",
@@ -656,6 +826,11 @@ export const SOLUTIONS: Record<string, Solution> = {
     tools: [
       { name: "Make", url: "https://make.com", tier: "freemium", note: "Orchestrate the sequence" },
       { name: "Tally", url: "https://tally.so", tier: "free", note: "Intake + contract forms" },
+    ],
+    tiers: [
+      { level: "Quick Win", time: "An afternoon", what: "Write a checklist + one welcome email and one intake form you reuse for every client.", impact: "Onboarding stops being a scramble; nothing obvious gets missed." },
+      { level: "Workflow Fix", time: "A weekend", what: "Automate the sequence: signed deal → welcome → form → contract → first task.", impact: "Every client gets the same polished start, hands-off." },
+      { level: "Built right", time: "2–4 weeks", what: "A full onboarding engine wired to payments/CRM with stall-detection nudges.", impact: "A consistent, professional first experience that scales with you." },
     ],
     playbook: {
       howItWorks:

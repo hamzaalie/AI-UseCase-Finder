@@ -6,8 +6,6 @@ import Stepper from "@/components/Stepper";
 import IndustryPicker from "@/components/IndustryPicker";
 import TaskAudit from "@/components/TaskAudit";
 import Results from "@/components/Results";
-import Checklist from "@/components/Checklist";
-import EmailCapture from "@/components/EmailCapture";
 import Footer from "@/components/Footer";
 import { getMatches, Ratings, Severity } from "@/lib/match";
 import { decodeState, encodeState, shareUrl, planPdfUrl } from "@/lib/share";
@@ -39,7 +37,6 @@ export default function Page() {
   }, [industry, ratings, showResults, hydrated]);
 
   const result = useMemo(() => (industry ? getMatches(industry, ratings) : null), [industry, ratings]);
-  const orderedIds = useMemo(() => result?.ordered.map((s) => s.id) ?? [], [result]);
   const ratedTaskIds = useMemo(() => Object.keys(ratings).filter((id) => ratings[id] >= 1), [ratings]);
 
   function handleSelectIndustry(id: string) {
@@ -100,16 +97,12 @@ export default function Page() {
 
       {showResults && result && (
         <div ref={resultsRef} className="scroll-mt-16">
-          <Results result={result} selection={{ industry, ratings }} />
-          <Checklist solutionIds={orderedIds} />
-          <div className="border-t border-ink/10 py-8 print:hidden">
-            <EmailCapture
-              industry={industry}
-              tasks={ratedTaskIds}
-              planUrl={shareUrl({ industry, ratings })}
-              planPdfUrl={planPdfUrl({ industry, ratings })}
-            />
-          </div>
+          <Results
+            result={result}
+            selection={{ industry, ratings }}
+            planUrl={shareUrl({ industry, ratings })}
+            planPdfUrl={planPdfUrl({ industry, ratings })}
+          />
           <button
             type="button"
             onClick={handleReset}

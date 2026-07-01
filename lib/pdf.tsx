@@ -65,34 +65,37 @@ const DIFFICULTY: Record<string, string> = {
 };
 const SEVERITY: Record<number, string> = { 1: "Minor pain", 2: "Hurts a lot", 3: "Major drain" };
 
-function Card({ sol }: { sol: ScoredSolution }) {
+function Card({ sol, rank }: { sol: ScoredSolution; rank: number }) {
   const pb = sol.playbook;
   return (
     <View style={s.card} wrap={false}>
       <View style={s.cardTop}>
-        <Text style={s.name}>{sol.name}</Text>
+        <Text style={s.name}>
+          {rank}. {sol.name}
+        </Text>
         <Text style={s.tag}>{sol.category}</Text>
       </View>
       <Text style={s.tag}>
         {SEVERITY[sol.severity]} · {DIFFICULTY[sol.difficulty]}
       </Text>
-      <Text style={s.what}>{sol.what}</Text>
       <Text style={s.reason}>For you: {sol.reason}</Text>
 
-      <View style={s.metaRow}>
-        <View style={s.metaItem}>
-          <Text style={s.metaKey}>Setup</Text>
-          <Text>{sol.setupTime}</Text>
-        </View>
-        <View style={s.metaItem}>
-          <Text style={s.metaKey}>Typical cost</Text>
-          <Text>{sol.cost}</Text>
-        </View>
-        <View style={s.metaItem}>
-          <Text style={s.metaKey}>Time to value</Text>
-          <Text>{pb.timeToValue}</Text>
-        </View>
-      </View>
+      <Text style={s.subhead}>The problem</Text>
+      <Text style={s.body}>{sol.problem}</Text>
+
+      <Text style={s.subhead}>How AI helps</Text>
+      {sol.helps.map((h, i) => (
+        <Text key={i} style={s.li}>
+          • {h}
+        </Text>
+      ))}
+
+      <Text style={s.subhead}>Implementation tiers</Text>
+      {sol.tiers.map((t, i) => (
+        <Text key={i} style={s.li}>
+          <Text style={{ fontFamily: "Helvetica-Bold" }}>{t.level}</Text> ({t.time}) — {t.what} Impact: {t.impact}
+        </Text>
+      ))}
 
       {sol.tools.length > 0 && (
         <>
@@ -100,23 +103,6 @@ function Card({ sol }: { sol: ScoredSolution }) {
           <Text style={s.body}>{sol.tools.map((t) => `${t.name} (${t.tier})`).join("  ·  ")}</Text>
         </>
       )}
-
-      <Text style={s.subhead}>How it works</Text>
-      <Text style={s.body}>{pb.howItWorks}</Text>
-
-      <Text style={s.subhead}>How to roll it out</Text>
-      {pb.phases.map((p, i) => (
-        <Text key={i} style={s.li}>
-          {i + 1}. {p.title} — {p.detail}
-        </Text>
-      ))}
-
-      <Text style={s.subhead}>Watch out for</Text>
-      {pb.watchOuts.map((w, i) => (
-        <Text key={i} style={s.li}>
-          • {w}
-        </Text>
-      ))}
 
       <View style={s.twoCol}>
         <View style={s.half}>
@@ -144,19 +130,6 @@ function Card({ sol }: { sol: ScoredSolution }) {
   );
 }
 
-function Section({ title, sub, items }: { title: string; sub: string; items: ScoredSolution[] }) {
-  if (items.length === 0) return null;
-  return (
-    <View>
-      <Text style={s.sectionHead}>
-        {title} <Text style={s.sectionSub}>— {sub}</Text>
-      </Text>
-      {items.map((sol) => (
-        <Card key={sol.id} sol={sol} />
-      ))}
-    </View>
-  );
-}
 
 function PlanDocument({ result, planUrl }: { result: MatchResult; planUrl: string }) {
   const date = new Date().toISOString().slice(0, 10);
@@ -186,9 +159,12 @@ function PlanDocument({ result, planUrl }: { result: MatchResult; planUrl: strin
 
         <Text style={s.summary}>{result.summary}</Text>
 
-        <Section title="Before you build anything" sub="you might not even need AI" items={result.noAiFirst} />
-        <Section title="Quick wins" sub="do these yourself" items={result.quickWins} />
-        <Section title="Bigger projects" sub="worth getting built right" items={result.projects} />
+        <Text style={s.sectionHead}>
+          Your ranked roadmap <Text style={s.sectionSub}>— {result.ordered.length} opportunities</Text>
+        </Text>
+        {result.ordered.map((sol, i) => (
+          <Card key={sol.id} sol={sol} rank={i + 1} />
+        ))}
 
         <View style={s.footer} fixed>
           <Text>Built by Hamza Ali · Netsol AI · netsolai.cz</Text>
