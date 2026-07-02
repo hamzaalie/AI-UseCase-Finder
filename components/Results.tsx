@@ -8,6 +8,7 @@ import ShareBar from "./ShareBar";
 import OpportunityScore from "./OpportunityScore";
 import EmailCapture from "./EmailCapture";
 import Checklist from "./Checklist";
+import HelpRequest from "./HelpRequest";
 
 interface Props {
   result: MatchResult;
@@ -126,32 +127,37 @@ export default function Results({ result, selection, planUrl, planPdfUrl, aiMess
           these systems for small businesses at Netsol AI.
         </p>
 
-        <div className="mt-6 flex flex-wrap gap-3">
+        <div className="mt-6">
+          <HelpRequest
+            items={all.map((s) => ({ id: s.id, name: s.name }))}
+            industry={selection.industry}
+            planUrl={planUrl}
+            planPdfUrl={planPdfUrl}
+          />
+        </div>
+
+        <div className="mt-4 flex flex-wrap items-center gap-4 text-sm">
           {bookingUrl && (
             <a
               href={bookingUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block rounded-xl bg-accent px-6 py-3 font-semibold text-white"
+              className="font-semibold text-paper underline decoration-paper/40 underline-offset-2"
             >
-              Book a free 15-min call
+              …or book a free 15-min call
             </a>
           )}
           <a
-            href={`mailto:${contactEmail}?subject=${encodeURIComponent(
-              `Help with my AI plan (${result.industryLabel})`
-            )}&body=${encodeURIComponent(
-              `Hi Hamza,\n\nI just used the AI Use-Case Finder for my ${result.industryLabel.toLowerCase()} business and I'd like a hand with:\n\n- \n\nMy plan: ${planUrl}\n`
-            )}`}
-            className="inline-block rounded-xl border border-paper/40 px-6 py-3 font-semibold text-paper transition-colors hover:bg-paper/10"
+            href={`mailto:${contactEmail}`}
+            className="text-paper/70 underline decoration-paper/30 underline-offset-2 hover:text-paper"
           >
-            Email Netsol AI
+            {contactEmail}
           </a>
           <a
             href="https://netsolai.cz"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center px-3 py-3 text-sm text-paper/70 underline decoration-paper/30 underline-offset-2 hover:text-paper"
+            className="text-paper/70 underline decoration-paper/30 underline-offset-2 hover:text-paper"
           >
             netsolai.cz
           </a>
