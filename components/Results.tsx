@@ -23,7 +23,7 @@ const UNLOCK_KEY = "aiuf:unlocked:v1";
 export default function Results({ result, selection, planUrl, planPdfUrl, aiMessage }: Props) {
   const [unlocked, setUnlocked] = useState(false);
   const bookingUrl = process.env.NEXT_PUBLIC_BOOKING_URL;
-  const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL || "hamzaaliaps098@gmail.com";
+  const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL || "info@netsolai.cz";
 
   // Once someone has unlocked (left their email), don't gate them again.
   useEffect(() => {
@@ -126,27 +126,6 @@ export default function Results({ result, selection, planUrl, planPdfUrl, aiMess
           these systems for small businesses at Netsol AI.
         </p>
 
-        <div className="mt-6 grid gap-3 sm:grid-cols-3">
-          <div className="rounded-xl bg-paper/10 p-4">
-            <p className="font-semibold">Point me at your quick wins</p>
-            <p className="mt-1 text-sm text-paper/70">
-              I&apos;ll set up the do-it-yourself ones with you so they actually go live — fast, and mostly free.
-            </p>
-          </div>
-          <div className="rounded-xl bg-paper/10 p-4">
-            <p className="font-semibold">Build the bigger projects</p>
-            <p className="mt-1 text-sm text-paper/70">
-              I design and build the automations end-to-end so they run reliably, hands-off.
-            </p>
-          </div>
-          <div className="rounded-xl bg-paper/10 p-4">
-            <p className="font-semibold">Not sure what&apos;s worth it?</p>
-            <p className="mt-1 text-sm text-paper/70">
-              A free 15-minute call to decide which one or two things to do first — and what to skip.
-            </p>
-          </div>
-        </div>
-
         <div className="mt-6 flex flex-wrap gap-3">
           {bookingUrl && (
             <a
@@ -166,7 +145,7 @@ export default function Results({ result, selection, planUrl, planPdfUrl, aiMess
             )}`}
             className="inline-block rounded-xl border border-paper/40 px-6 py-3 font-semibold text-paper transition-colors hover:bg-paper/10"
           >
-            Email Hamza
+            Email Netsol AI
           </a>
           <a
             href="https://netsolai.cz"
