@@ -856,4 +856,936 @@ export const SOLUTIONS: Record<string, Solution> = {
       timeToValue: "A weekend to build; every client after that gets the polished version.",
     },
   },
+
+  // ================= Industry-specific case studies =================
+
+  re_listing: {
+    id: "re_listing",
+    name: "Listing description writer",
+    category: "Marketing",
+    problem: "Every new property needs fresh, sellable copy — and writing it well, fast, for every portal eats your day.",
+    helps: [
+      "Turns the property facts into polished listing copy in your voice",
+      "Spins out portal, email and social versions at once",
+      "Keeps tone consistent across every listing",
+    ],
+    what: "Feed in the property's key details and get a polished listing description — plus matching social and email versions — in your voice, in a minute.",
+    why: "Better-written listings get more clicks and enquiries, and you stop losing evenings to copywriting for every new instruction.",
+    effort: "quickwin",
+    difficulty: "diy",
+    impact: 6,
+    setupTime: "Start today",
+    cost: "Free tier works",
+    synergies: ["socials", "content", "re_matchalert"],
+    tools: [
+      { name: "Claude", url: "https://claude.ai", tier: "freemium", note: "Facts → on-brand listing copy" },
+      { name: "ChatGPT", url: "https://chat.openai.com", tier: "freemium", note: "Fast variations" },
+    ],
+    tiers: [
+      { level: "Quick Win", time: "Today", what: "Build a prompt with your tone + a fill-in property template; paste details, get a draft, edit lightly.", impact: "Listing copy in a minute instead of half an hour." },
+      { level: "Workflow Fix", time: "A few hours", what: "Connect your CRM/listing form so details flow in and drafts come back automatically.", impact: "Every new listing gets copy the moment it's entered." },
+      { level: "Built right", time: "1–2 weeks", what: "Auto-generate portal + social + email variants and queue them to publish.", impact: "One entry → copy live across every channel, hands-off." },
+    ],
+    playbook: {
+      howItWorks:
+        "You give an AI model your tone and a template that lists the facts that matter (beds, features, area highlights, price). For each property you paste the facts, and it returns a clean description you tweak — never inventing details it wasn't given.",
+      stack: [
+        { layer: "Template", tool: "A saved prompt", does: "Locks your tone and the fields to fill." },
+        { layer: "Drafting", tool: "Claude / ChatGPT", does: "Turns facts into listing copy + variants." },
+        { layer: "Publish", tool: "Your CRM/portal", does: "Where the copy goes live." },
+      ],
+      phases: [
+        { title: "Today — the template", detail: "Write your tone rules and the facts you always include; save it as a reusable prompt." },
+        { title: "Run it live", detail: "Next listing: paste the facts, generate, edit for accuracy, publish." },
+        { title: "Level up", detail: "Auto-feed details from your CRM and generate the social/email versions too." },
+      ],
+      watchOuts: [
+        "Only give it real facts — never let it invent square footage, schools or amenities.",
+        "Check compliance/fair-housing wording; keep a human final read.",
+      ],
+      worthItWhen: "You list often and writing copy for each one is a real time sink.",
+      skipIf: "You list rarely — a good template alone is enough.",
+      metric: "Time per listing and click/enquiry rate on new listings.",
+      timeToValue: "Today — your next listing can be drafted in a minute.",
+    },
+  },
+
+  re_matchalert: {
+    id: "re_matchalert",
+    name: "Buyer match alerts",
+    category: "Sales & leads",
+    problem: "The right buyers hear about a new listing too late — after it's been on the portals for days.",
+    helps: [
+      "Matches each new listing to buyers on your list by their criteria",
+      "Fires a personal alert the moment it lands",
+      "Makes you first to the right buyer, automatically",
+    ],
+    what: "When a new listing goes live, matching buyers on your list get an instant, personal heads-up before it hits the portals.",
+    why: "Speed and relevance win deals. This makes your database an asset instead of a spreadsheet you never use.",
+    effort: "project",
+    difficulty: "weekend",
+    impact: 7,
+    setupTime: "A weekend to wire up",
+    cost: "Free tiers cover low volume",
+    synergies: ["leadreply", "followup", "re_listing"],
+    tools: [
+      { name: "Make", url: "https://make.com", tier: "freemium", note: "Match listing → buyers, send alert" },
+      { name: "Google Sheets", url: "https://sheets.google.com", tier: "free", note: "Buyer criteria list" },
+    ],
+    tiers: [
+      { level: "Quick Win", time: "An hour", what: "Keep buyers + their criteria in one sheet and send manual matches when a listing lands.", impact: "The right buyers finally hear first." },
+      { level: "Workflow Fix", time: "A weekend", what: "Automate: new listing → filter buyers by criteria → send each a personal alert.", impact: "Instant matched alerts with zero manual effort." },
+      { level: "Built right", time: "2–3 weeks", what: "Wire it to your CRM with smart matching and reply tracking.", impact: "Your database quietly generates viewings on its own." },
+    ],
+    playbook: {
+      howItWorks:
+        "You store buyers with their must-haves (area, budget, beds). When a listing is added, an automation checks it against every buyer's criteria and messages the matches with the details and a viewing link — before the portal crowd sees it.",
+      stack: [
+        { layer: "Buyer list", tool: "Sheet / CRM", does: "Holds each buyer's criteria." },
+        { layer: "Matcher", tool: "Make", does: "Filters buyers against the new listing." },
+        { layer: "Alert", tool: "Email / SMS", does: "Sends the personal heads-up + viewing link." },
+      ],
+      phases: [
+        { title: "Capture criteria", detail: "Add the must-haves for each active buyer to one place." },
+        { title: "Build the match rule", detail: "New listing → filter by area/budget/beds → message matches." },
+        { title: "Weekend — automate + test", detail: "Wire trigger to alert and test with a real listing." },
+      ],
+      watchOuts: [
+        "Keep criteria current or you'll send irrelevant alerts and annoy buyers.",
+        "Don't over-message — one good match beats ten loose ones.",
+      ],
+      worthItWhen: "You have a real buyer list and listings move fast.",
+      skipIf: "Your buyer list is tiny — a quick manual text is easier.",
+      metric: "Time-to-first-viewing on new listings and alert→viewing rate.",
+      timeToValue: "Built in a weekend; matched viewings within the first listings.",
+    },
+  },
+
+  tr_report: {
+    id: "tr_report",
+    name: "Job photo → progress report",
+    category: "Operations",
+    problem: "You snap site photos all day, but turning them into a tidy client update never happens — so clients feel left in the dark.",
+    helps: [
+      "Turns photos + a few notes into a clean progress update",
+      "Sends clients a professional report without the evening admin",
+      "Keeps a tidy record of every job stage",
+    ],
+    what: "Drop in your site photos and a line of notes, and get a clean, client-ready progress update — without sitting down to write it up.",
+    why: "Clients who get clear updates chase you less, trust you more, and refer you — and you skip the paperwork.",
+    effort: "quickwin",
+    difficulty: "diy",
+    impact: 6,
+    setupTime: "Start today",
+    cost: "Free to start",
+    synergies: ["notes", "reviews", "invoicing"],
+    tools: [
+      { name: "Claude", url: "https://claude.ai", tier: "freemium", note: "Notes → tidy update" },
+      { name: "Google Docs", url: "https://docs.google.com", tier: "free", note: "Hold the report" },
+    ],
+    tiers: [
+      { level: "Quick Win", time: "Today", what: "After a site visit, paste your rough notes + attach photos into a fixed report template.", impact: "A professional update in minutes, not skipped entirely." },
+      { level: "Workflow Fix", time: "A few hours", what: "Standardise a per-stage template and send it to clients on a set cadence.", impact: "Clients get consistent updates without you remembering." },
+      { level: "Built right", time: "1–2 weeks", what: "Photos uploaded from your phone auto-assemble into a branded report and send.", impact: "Updates happen from the site with no desk time." },
+    ],
+    playbook: {
+      howItWorks:
+        "You keep a simple report structure (what got done, what's next, any decisions needed). You paste your quick notes, an AI tidies them into clear client language, you attach the photos and send. No blank-page write-up at the end of the day.",
+      stack: [
+        { layer: "Capture", tool: "Phone photos + notes", does: "The raw material from site." },
+        { layer: "Writer", tool: "Claude", does: "Turns notes into a clear update." },
+        { layer: "Send", tool: "Email / Docs", does: "Delivers the report to the client." },
+      ],
+      phases: [
+        { title: "Today — the template", detail: "Decide your report sections and save a prompt that fills them from notes." },
+        { title: "Run it after one job", detail: "Paste notes, attach photos, send. See how it lands." },
+        { title: "Automate", detail: "Wire phone uploads to auto-build and send on a schedule." },
+      ],
+      watchOuts: [
+        "Keep it factual — don't let it over-promise timelines you haven't agreed.",
+        "A quick human glance before sending avoids embarrassing errors.",
+      ],
+      worthItWhen: "Clients want updates and writing them up keeps slipping.",
+      skipIf: "Your jobs are quick one-visit fixes that don't need updates.",
+      metric: "Client chase-up messages (should fall) and referral/repeat rate.",
+      timeToValue: "Today — your next job update takes minutes.",
+    },
+  },
+
+  tr_estimate: {
+    id: "tr_estimate",
+    name: "Instant estimate builder",
+    category: "Sales & leads",
+    problem: "Every estimate is built from scratch, so quoting is slow — and the slow quote often loses the job.",
+    helps: [
+      "Builds a ballpark estimate from your own rates and materials",
+      "Turns a short brief into a clean, itemised draft",
+      "Gets a number to the customer fast, while they're still keen",
+    ],
+    what: "Feed in the job details and your price list, and get a clean, itemised estimate draft in minutes — you review the numbers and send.",
+    why: "The first fair quote often wins. This gets you there fast without you owning the maths from zero each time.",
+    effort: "quickwin",
+    difficulty: "diy",
+    impact: 7,
+    setupTime: "Start today once your rates are listed",
+    cost: "Free tier works",
+    synergies: ["quoting", "leadreply", "tr_report"],
+    tools: [
+      { name: "Google Sheets", url: "https://sheets.google.com", tier: "free", note: "Your rate/price book" },
+      { name: "Claude", url: "https://claude.ai", tier: "freemium", note: "Brief + rates → itemised draft" },
+    ],
+    tiers: [
+      { level: "Quick Win", time: "Today", what: "Put your rates in a sheet; paste a job brief + the relevant rates and get an itemised draft.", impact: "Estimates out same-day instead of 'I'll get back to you'." },
+      { level: "Workflow Fix", time: "A few hours", what: "Build a quick intake form that feeds the brief straight into the estimate.", impact: "Enquiry → itemised draft with far less back-and-forth." },
+      { level: "Built right", time: "1–2 weeks", what: "Estimates generated from your live price book with margins and a send/e-sign step.", impact: "A quoting machine priced from your real numbers." },
+    ],
+    playbook: {
+      howItWorks:
+        "You keep your labour and material rates in one place. For a new job you give the AI the scope plus the relevant rates, and it lays out an itemised estimate. You set/confirm the final prices — it never guesses your rates, it uses the ones you provide.",
+      stack: [
+        { layer: "Price book", tool: "Google Sheets", does: "Your real labour + material rates." },
+        { layer: "Drafting", tool: "Claude", does: "Turns scope + rates into an itemised estimate." },
+        { layer: "Send", tool: "Email / invoicing tool", does: "Deliver the quote to the customer." },
+      ],
+      phases: [
+        { title: "List your rates", detail: "Get labour + common materials into one sheet you can copy from." },
+        { title: "Draft one estimate", detail: "Paste scope + rates, generate, sanity-check the maths, send." },
+        { title: "Streamline", detail: "Add an intake form and, later, generate straight from the price book." },
+      ],
+      watchOuts: [
+        "You own pricing — always verify totals and margins before sending.",
+        "Keep the price book current or estimates drift from reality.",
+      ],
+      worthItWhen: "Quoting is slow and that delay costs you jobs.",
+      skipIf: "Your jobs are fixed-price and a template already covers it.",
+      metric: "Time-to-quote and quote→win rate.",
+      timeToValue: "Today — your next estimate goes out same-day.",
+    },
+  },
+
+  pr_docsum: {
+    id: "pr_docsum",
+    name: "Document & contract summariser",
+    category: "Operations",
+    problem: "Long documents and contracts eat hours as you hunt for the key points, obligations and risks.",
+    helps: [
+      "Summarises long docs into key points, dates and obligations",
+      "Flags the clauses and risks worth a closer look",
+      "Turns a 30-page read into a 2-minute brief",
+    ],
+    what: "Drop in a long document and get a structured summary — key terms, obligations, dates and anything that needs a human's eye.",
+    why: "You reclaim billable hours and brief clients faster, without skimming and missing something important.",
+    effort: "quickwin",
+    difficulty: "diy",
+    impact: 7,
+    setupTime: "Start today",
+    cost: "Free tiers exist; ~€18/mo for heavy use",
+    synergies: ["notes", "faq", "pr_deadlines"],
+    tools: [
+      { name: "Claude", url: "https://claude.ai", tier: "freemium", note: "Strong at long-doc summaries" },
+      { name: "ChatGPT", url: "https://chat.openai.com", tier: "freemium", note: "Alternative" },
+    ],
+    honestNote:
+      "AI summaries are a starting point, not legal advice — a professional must still review anything that matters.",
+    tiers: [
+      { level: "Quick Win", time: "Today", what: "Paste a document with a fixed prompt: key terms, obligations, dates, risks, questions.", impact: "A 2-minute brief instead of a 30-minute read." },
+      { level: "Workflow Fix", time: "A few hours", what: "Standardise summary formats per document type and save them to the client file.", impact: "Consistent briefs your whole team can rely on." },
+      { level: "Built right", time: "2–4 weeks", what: "A private assistant over your document store with strict review controls.", impact: "Fast, consistent review at scale — with a human in the loop." },
+    ],
+    playbook: {
+      howItWorks:
+        "You paste (or upload) the document with a fixed instruction to extract a set structure — parties, key terms, obligations, dates, and anything unusual to check. It returns a skimmable brief so you spend your time on judgement, not hunting.",
+      stack: [
+        { layer: "Input", tool: "The document", does: "What you need summarised." },
+        { layer: "Summariser", tool: "Claude", does: "Extracts the fixed structure + flags risks." },
+        { layer: "Home", tool: "Client file / CRM", does: "Where the brief is stored." },
+      ],
+      phases: [
+        { title: "Today — fix the format", detail: "Write the extraction prompt (terms/obligations/dates/risks). Save it." },
+        { title: "Run it on a real doc", detail: "Summarise, then verify against the source before relying on it." },
+        { title: "Handle sensitive data properly", detail: "For confidential files, use a tool/plan with the right data terms." },
+      ],
+      watchOuts: [
+        "Never rely on the summary alone for anything that carries risk — verify against the source.",
+        "Mind confidentiality: use an appropriate, private tool for sensitive documents.",
+      ],
+      worthItWhen: "You read a lot of long documents and it's eating billable time.",
+      skipIf: "Your documents are short or highly bespoke where full reading is unavoidable.",
+      metric: "Time per document review and turnaround to the client.",
+      timeToValue: "Today — your next long doc summarised in minutes.",
+    },
+  },
+
+  pr_deadlines: {
+    id: "pr_deadlines",
+    name: "Deadline & filing tracker",
+    category: "Admin & finance",
+    problem: "Client deadlines, filings and renewals are scattered — and a missed date is a genuinely costly problem.",
+    helps: [
+      "Keeps every client deadline in one place",
+      "Sends you (and the client) reminders well ahead of time",
+      "Turns 'I hope we didn't miss anything' into certainty",
+    ],
+    what: "Every client deadline — filings, renewals, reviews — lives in one tracker that reminds you and the client well before the date.",
+    why: "You stop carrying deadlines in your head, protect against costly misses, and look on top of things.",
+    effort: "quickwin",
+    difficulty: "diy",
+    impact: 6,
+    setupTime: "About an hour",
+    cost: "Free with a spreadsheet + automation",
+    synergies: ["followup", "reporting", "pr_docsum"],
+    tools: [
+      { name: "Google Sheets", url: "https://sheets.google.com", tier: "free", note: "The deadline list" },
+      { name: "Make", url: "https://make.com", tier: "freemium", note: "Fire reminders ahead of dates" },
+    ],
+    honestNote:
+      "This isn't really AI — it's a shared tracker plus scheduled reminders. Set it up before paying for anything fancier.",
+    notReallyAI: true,
+    tiers: [
+      { level: "Quick Win", time: "An hour", what: "Put every client deadline in one sheet with the date and owner.", impact: "Nothing lives only in your head anymore." },
+      { level: "Workflow Fix", time: "A few hours", what: "Automate reminders to you (and the client) X days before each date.", impact: "You're nudged in time, every time — automatically." },
+      { level: "Built right", time: "1–2 weeks", what: "Wire it to your practice tools with escalations if a task isn't done.", impact: "A safety net that catches slips before they become misses." },
+    ],
+    playbook: {
+      howItWorks:
+        "All client deadlines go into one dated list. A scheduled automation checks it daily and sends reminders a set number of days before each due date — to you, and optionally the client — so nothing sneaks up.",
+      stack: [
+        { layer: "Tracker", tool: "Google Sheets", does: "One dated list of every deadline." },
+        { layer: "Scheduler", tool: "Make / Apps Script", does: "Checks daily, sends reminders ahead of time." },
+      ],
+      phases: [
+        { title: "Build the list", detail: "One row per client deadline: what, when, who owns it." },
+        { title: "Add reminders", detail: "Automate a nudge 14/7/1 days before each date." },
+        { title: "Add escalation", detail: "If a deadline task isn't marked done, escalate it to you." },
+      ],
+      watchOuts: [
+        "The tracker is only as good as the data — keep it current.",
+        "Give each deadline a clear owner so reminders reach the right person.",
+      ],
+      worthItWhen: "You juggle many client deadlines and a miss is expensive.",
+      skipIf: "You have very few clients and your calendar already covers it.",
+      metric: "Missed/near-miss deadlines (aim for zero) and time spent tracking.",
+      timeToValue: "An hour to set up; reminders start on the next cycle.",
+    },
+  },
+
+  ec_cart: {
+    id: "ec_cart",
+    name: "Abandoned-cart recovery",
+    category: "Sales & leads",
+    problem: "Shoppers add to cart, then vanish — leaving ready-to-buy revenue on the table every day.",
+    helps: [
+      "Emails/texts shoppers who left items behind",
+      "Nudges them back with a timely, friendly reminder",
+      "Recovers sales you were otherwise losing",
+    ],
+    what: "When a shopper abandons their cart, an automated, well-timed email/SMS brings them back to finish the purchase.",
+    why: "These are your warmest buyers — they nearly bought. Recovering even a slice of them is close to free revenue.",
+    effort: "quickwin",
+    difficulty: "diy",
+    impact: 7,
+    setupTime: "About an hour on most platforms",
+    cost: "Free/low on most store platforms",
+    synergies: ["followup", "reviews", "ec_productdesc"],
+    tools: [
+      { name: "Shopify Email", url: "https://www.shopify.com/email", tier: "freemium", note: "Built-in cart recovery" },
+      { name: "Klaviyo", url: "https://www.klaviyo.com", tier: "freemium", note: "Powerful flows, free tier" },
+    ],
+    honestNote:
+      "Most store platforms include cart recovery — switch it on before buying a separate tool.",
+    tiers: [
+      { level: "Quick Win", time: "An hour", what: "Turn on your platform's built-in abandoned-cart email with one friendly reminder.", impact: "You start recovering carts you were losing entirely." },
+      { level: "Workflow Fix", time: "A few hours", what: "Add a 2–3 step flow (reminder → helpful nudge → gentle incentive) across email + SMS.", impact: "More recovered sales from the same traffic." },
+      { level: "Built right", time: "1–2 weeks", what: "Personalise by product/segment and add browse-abandon + post-purchase flows.", impact: "A full lifecycle engine driving repeat revenue." },
+    ],
+    playbook: {
+      howItWorks:
+        "Your store already knows who abandoned a cart and what was in it. A flow waits a short while, then emails (or texts) the shopper a friendly reminder with their items and a one-tap link back to checkout — stopping if they complete the purchase.",
+      stack: [
+        { layer: "Store", tool: "Shopify / your platform", does: "Detects the abandoned cart + items." },
+        { layer: "Flow", tool: "Shopify Email / Klaviyo", does: "Sends the timed recovery messages." },
+      ],
+      phases: [
+        { title: "Turn on one reminder", detail: "Enable the built-in cart email with your branding and a clear CTA." },
+        { title: "Add a short sequence", detail: "Reminder → helpful nudge → optional small incentive; exit on purchase." },
+        { title: "Personalise", detail: "Segment by product/value and add browse-abandon + win-back flows." },
+      ],
+      watchOuts: [
+        "Don't lead with a discount — you'll train shoppers to abandon on purpose.",
+        "Keep timing tight; a reminder a day late converts far worse.",
+      ],
+      worthItWhen: "You get real cart traffic and see meaningful abandonment.",
+      skipIf: "Volume is tiny — focus on getting traffic first.",
+      metric: "Cart-recovery rate and revenue recovered per month.",
+      timeToValue: "An hour to switch on; recovers carts the same day.",
+    },
+  },
+
+  ec_productdesc: {
+    id: "ec_productdesc",
+    name: "Product description generator",
+    category: "Marketing",
+    problem: "Hundreds of SKUs need good, search-friendly descriptions — and writing them by hand never gets done.",
+    helps: [
+      "Turns specs into clear, on-brand, search-friendly copy",
+      "Handles bulk catalogues, not one product at a time",
+      "Keeps tone and format consistent across the store",
+    ],
+    what: "Feed in product specs and get clean, on-brand, SEO-friendly descriptions — in bulk — so your whole catalogue reads well.",
+    why: "Better descriptions help products get found and bought, and you stop leaving SKUs with thin or missing copy.",
+    effort: "quickwin",
+    difficulty: "diy",
+    impact: 6,
+    setupTime: "Start today; bulk in a weekend",
+    cost: "Free tier for small runs; ~€18/mo for bulk",
+    synergies: ["content", "ec_cart", "socials"],
+    tools: [
+      { name: "Claude", url: "https://claude.ai", tier: "freemium", note: "Specs → on-brand copy" },
+      { name: "Google Sheets", url: "https://sheets.google.com", tier: "free", note: "Bulk in/out" },
+    ],
+    tiers: [
+      { level: "Quick Win", time: "Today", what: "Build a prompt with your tone + format; paste a product's specs, get a description.", impact: "Thin/missing descriptions filled in fast." },
+      { level: "Workflow Fix", time: "A weekend", what: "Run the catalogue in batches from a spreadsheet (specs in → copy out).", impact: "A whole category described in a sitting." },
+      { level: "Built right", time: "1–2 weeks", what: "Auto-generate copy for new SKUs as they're added, pushed to the store.", impact: "Every new product ships with good copy, automatically." },
+    ],
+    playbook: {
+      howItWorks:
+        "You define your tone and description format once. Then you feed products' real specs — individually or in bulk from a sheet — and get consistent, benefit-led descriptions back. It writes from the specs you give, so it won't invent features.",
+      stack: [
+        { layer: "Template", tool: "A saved prompt", does: "Your tone, structure and keyword rules." },
+        { layer: "Drafting", tool: "Claude", does: "Specs → descriptions, in bulk." },
+        { layer: "Store", tool: "Shopify / your platform", does: "Where the copy is published." },
+      ],
+      phases: [
+        { title: "Today — the template", detail: "Lock tone, length, and the fields (features → benefits, keywords)." },
+        { title: "Batch a category", detail: "Put specs in a sheet, generate copy for the whole set, review, upload." },
+        { title: "Automate new SKUs", detail: "Trigger generation when a product is added and push to the store." },
+      ],
+      watchOuts: [
+        "Feed real specs only — never let it invent materials, sizes or claims.",
+        "Skim for accuracy and brand fit before publishing at scale.",
+      ],
+      worthItWhen: "You have many products and copy is thin, missing, or inconsistent.",
+      skipIf: "You sell a handful of products you can describe by hand.",
+      metric: "SKUs with quality copy and product-page conversion/search traffic.",
+      timeToValue: "Today for a few; a whole category over a weekend.",
+    },
+  },
+
+  ag_report: {
+    id: "ag_report",
+    name: "Client reporting packs",
+    category: "Operations",
+    problem: "Monthly client reporting swallows a whole day of copy-pasting numbers and writing the same commentary.",
+    helps: [
+      "Pulls the numbers together into a clean report",
+      "Drafts the 'what happened and why' commentary",
+      "Gives every client a consistent, on-time pack",
+    ],
+    what: "Your client metrics get pulled into a clean report with a first draft of the commentary — so reporting is review-and-send, not build-from-scratch.",
+    why: "You win back a day a month and clients get sharper, more consistent reporting — which helps retention.",
+    effort: "project",
+    difficulty: "weekend",
+    impact: 7,
+    setupTime: "A weekend to set up the first one",
+    cost: "Free tiers cover it; tools ~€0–20/mo",
+    synergies: ["reporting", "data", "ag_scope"],
+    tools: [
+      { name: "Looker Studio", url: "https://lookerstudio.google.com", tier: "free", note: "Auto dashboards" },
+      { name: "Make", url: "https://make.com", tier: "freemium", note: "Pull data + assemble" },
+    ],
+    tiers: [
+      { level: "Quick Win", time: "A few hours", what: "Build one templated report and use AI to draft the commentary from the numbers.", impact: "Reporting time drops from a day to a couple of hours." },
+      { level: "Workflow Fix", time: "A weekend", what: "Auto-pull metrics into a dashboard and generate the commentary on a schedule.", impact: "Reports mostly build themselves each month." },
+      { level: "Built right", time: "2–4 weeks", what: "Per-client branded packs assembled and delivered automatically with AI insights.", impact: "Scale clients without scaling reporting hours." },
+    ],
+    playbook: {
+      howItWorks:
+        "Client metrics land in a dashboard or sheet. A template pulls the figures, and an AI drafts the plain-English 'what changed and why it matters' from those numbers. You edit the insight and send — no more manual copy-paste marathons.",
+      stack: [
+        { layer: "Data", tool: "Looker Studio / Sheets", does: "Collects the client's metrics." },
+        { layer: "Assembler", tool: "Make", does: "Builds the report on schedule." },
+        { layer: "Commentary", tool: "Claude", does: "Drafts the insight from the numbers." },
+      ],
+      phases: [
+        { title: "Template one client", detail: "Decide the metrics and layout; get them into a dashboard." },
+        { title: "Draft the commentary", detail: "Feed the numbers to AI for a first-pass insight; you refine it." },
+        { title: "Weekend — automate", detail: "Schedule the pull + assembly + draft for every client." },
+      ],
+      watchOuts: [
+        "AI can misread a number's cause — you own the insight, verify it.",
+        "Garbage in, garbage out — the data feed has to be reliable.",
+      ],
+      worthItWhen: "You report to several clients monthly and it eats real time.",
+      skipIf: "You have one or two clients and a quick manual report is fine.",
+      metric: "Hours per reporting cycle and client retention.",
+      timeToValue: "First templated report this month; automated after a weekend.",
+    },
+  },
+
+  ag_scope: {
+    id: "ag_scope",
+    name: "Scope / SOW drafts",
+    category: "Sales & leads",
+    problem: "Turning a discovery call or brief into a scope of work takes hours — and slow scoping stalls deals.",
+    helps: [
+      "Turns notes/brief into a structured scope draft",
+      "Includes deliverables, timeline and assumptions",
+      "Gets a professional SOW in front of the client fast",
+    ],
+    what: "Feed in your call notes or brief and get a structured scope-of-work draft — deliverables, phases, timeline, assumptions — ready for you to price and send.",
+    why: "Faster, clearer scoping closes deals quicker and prevents the scope-creep that kills project margins.",
+    effort: "quickwin",
+    difficulty: "diy",
+    impact: 6,
+    setupTime: "Today once you have a template",
+    cost: "Free tier works",
+    synergies: ["quoting", "notes", "onboarding"],
+    tools: [
+      { name: "Claude", url: "https://claude.ai", tier: "freemium", note: "Brief → structured SOW" },
+      { name: "PandaDoc", url: "https://pandadoc.com", tier: "freemium", note: "Templated SOW + e-sign" },
+    ],
+    tiers: [
+      { level: "Quick Win", time: "Today", what: "Turn your best SOW into a template; feed notes/brief and get a tailored draft.", impact: "Scopes drafted in minutes, sent same-day." },
+      { level: "Workflow Fix", time: "A few hours", what: "Standardise deliverable/phase language and pipe it into an e-sign doc.", impact: "Brief → signed SOW with less friction and fewer gaps." },
+      { level: "Built right", time: "1–2 weeks", what: "Generate scopes from your CRM/discovery data with pricing logic and tracking.", impact: "Consistent, margin-safe scoping at scale." },
+    ],
+    playbook: {
+      howItWorks:
+        "You keep a strong SOW template (structure, standard clauses, assumptions). For a new project you give the AI your discovery notes, and it drafts a tailored scope in that structure. You set pricing and tighten the deliverables before it goes out.",
+      stack: [
+        { layer: "Template", tool: "Your best SOW", does: "Structure, clauses, assumptions." },
+        { layer: "Drafting", tool: "Claude", does: "Notes → tailored scope draft." },
+        { layer: "Send", tool: "PandaDoc", does: "Pretty SOW + e-signature." },
+      ],
+      phases: [
+        { title: "Today — template it", detail: "Take your best SOW, mark the variable parts and standard assumptions." },
+        { title: "Draft from notes", detail: "Feed discovery notes, generate, then price and tighten scope." },
+        { title: "Streamline", detail: "Pipe drafts into an e-sign template and track opens/signs." },
+      ],
+      watchOuts: [
+        "Always nail down assumptions and exclusions — that's what prevents scope creep.",
+        "You own pricing and commitments; review every draft before sending.",
+      ],
+      worthItWhen: "Scoping is slow and it's delaying or losing you projects.",
+      skipIf: "Your projects are near-identical and one fixed template already works.",
+      metric: "Time-to-proposal and scope-creep incidents per project.",
+      timeToValue: "Today — your next scope goes out same-day.",
+    },
+  },
+
+  he_reminders: {
+    id: "he_reminders",
+    name: "No-show reminders & rebooking",
+    category: "Operations",
+    problem: "No-shows leave gaps you can't fill in time — and empty chairs are lost revenue you never get back.",
+    helps: [
+      "Sends automatic appointment reminders by SMS/email",
+      "Prompts easy rescheduling instead of a silent no-show",
+      "Fills freed slots by nudging your waitlist",
+    ],
+    what: "Clients get automatic reminders before their appointment, an easy way to reschedule, and — when a slot frees up — your waitlist gets nudged to fill it.",
+    why: "Fewer no-shows and faster re-fills directly protect your daily revenue, on autopilot.",
+    effort: "quickwin",
+    difficulty: "diy",
+    impact: 8,
+    setupTime: "About 30 minutes in your booking tool",
+    cost: "Often included in booking software",
+    synergies: ["scheduling", "followup", "reviews"],
+    tools: [
+      { name: "Cal.com", url: "https://cal.com", tier: "freemium", note: "Bookings + reminders" },
+      { name: "Fresha", url: "https://www.fresha.com", tier: "freemium", note: "Salon/clinic bookings + SMS" },
+    ],
+    honestNote:
+      "Most booking systems include reminders — switch them on before adding anything new.",
+    notReallyAI: true,
+    tiers: [
+      { level: "Quick Win", time: "30 minutes", what: "Turn on automatic email/SMS reminders in your booking tool.", impact: "No-shows drop from the very next day." },
+      { level: "Workflow Fix", time: "An hour", what: "Add one-tap reschedule and a confirmation step to reminders.", impact: "Would-be no-shows rebook instead of vanishing." },
+      { level: "Built right", time: "1–2 weeks", what: "Auto-offer freed slots to a waitlist and confirm the first taker.", impact: "Cancellations get re-filled without you lifting a finger." },
+    ],
+    playbook: {
+      howItWorks:
+        "Your booking tool already knows every appointment. You switch on reminders (with a reschedule link), so clients confirm or move rather than ghost. Add a waitlist step and, when someone cancels, the slot is offered to waiting clients automatically.",
+      stack: [
+        { layer: "Bookings", tool: "Cal.com / Fresha", does: "Holds appointments + client contacts." },
+        { layer: "Reminders", tool: "Built-in SMS/email", does: "Confirms, reminds, enables reschedule." },
+        { layer: "Waitlist", tool: "Booking tool / Make", does: "Fills freed slots automatically." },
+      ],
+      phases: [
+        { title: "30 min — reminders on", detail: "Enable SMS/email reminders with a reschedule link and confirmation." },
+        { title: "Reduce friction", detail: "Make rescheduling one tap so people move instead of no-showing." },
+        { title: "Auto re-fill", detail: "Add a waitlist and offer cancellations to it automatically." },
+      ],
+      watchOuts: [
+        "Get consent for SMS and respect opt-outs.",
+        "Don't over-remind — one or two well-timed nudges beat five.",
+      ],
+      worthItWhen: "No-shows and unfilled cancellations are costing you real money.",
+      skipIf: "You're fully booked with a waitlist and near-zero no-shows already.",
+      metric: "No-show rate and time-to-refill a cancelled slot.",
+      timeToValue: "30 minutes to switch on; fewer no-shows the next day.",
+    },
+  },
+
+  he_intake: {
+    id: "he_intake",
+    name: "Digital intake & consent forms",
+    category: "Admin & finance",
+    problem: "Paper intake and consent forms mean chasing details, manual typing, and a clunky first impression.",
+    helps: [
+      "Sends intake & consent forms before the visit",
+      "Stores answers digitally — no re-typing",
+      "Makes the first appointment smooth and professional",
+    ],
+    what: "New clients get an intake and consent form to complete before they arrive, stored digitally against their record — no paper, no chasing, no re-typing.",
+    why: "Appointments start on time and prepared, admin drops, and clients get a polished first experience.",
+    effort: "quickwin",
+    difficulty: "diy",
+    impact: 6,
+    setupTime: "An hour to set up",
+    cost: "Free tiers cover most",
+    synergies: ["scheduling", "onboarding", "he_reminders"],
+    tools: [
+      { name: "Tally", url: "https://tally.so", tier: "free", note: "Intake + consent forms" },
+      { name: "Jotform", url: "https://www.jotform.com", tier: "freemium", note: "Health-friendly forms + e-sign" },
+    ],
+    honestNote:
+      "This is a digital form + storage, not AI. For health data, choose a tool with the right privacy/compliance terms.",
+    notReallyAI: true,
+    tiers: [
+      { level: "Quick Win", time: "An hour", what: "Build one digital intake + consent form and send the link when a booking is made.", impact: "No more paper forms or re-typing details." },
+      { level: "Workflow Fix", time: "A few hours", what: "Auto-send the form on booking and file responses to the client record.", impact: "Every client arrives prepared, filed automatically." },
+      { level: "Built right", time: "1–2 weeks", what: "Wire intake into your practice system with reminders for incomplete forms.", impact: "A smooth, compliant intake with zero chasing." },
+    ],
+    playbook: {
+      howItWorks:
+        "You build the intake and consent questions once as a digital form. When a client books, they get the link, complete it before the visit, and their answers file straight to their record — replacing paper and manual entry.",
+      stack: [
+        { layer: "Form", tool: "Tally / Jotform", does: "Intake + consent, with e-sign." },
+        { layer: "Trigger", tool: "Booking tool / Make", does: "Sends the form on booking." },
+        { layer: "Storage", tool: "Your records", does: "Files the responses to the client." },
+      ],
+      phases: [
+        { title: "Build the form", detail: "Put your intake + consent questions into one digital form." },
+        { title: "Auto-send it", detail: "Trigger the form link when an appointment is booked." },
+        { title: "File + remind", detail: "Store responses to the record; nudge anyone who hasn't filled it." },
+      ],
+      watchOuts: [
+        "Health data needs a privacy-compliant tool and secure storage — check the terms.",
+        "Keep forms short; long forms don't get finished.",
+      ],
+      worthItWhen: "Paper intake is slowing you down or losing details.",
+      skipIf: "You already have a smooth digital intake in your practice software.",
+      metric: "Forms completed before the visit and admin time per client.",
+      timeToValue: "An hour to build; smoother from the next booking.",
+    },
+  },
+
+  ho_reservations: {
+    id: "ho_reservations",
+    name: "Reservation & no-show manager",
+    category: "Operations",
+    problem: "Tables get held for guests who never show, and juggling bookings by phone and notebook is chaos on a busy night.",
+    helps: [
+      "Takes reservations online with confirmations",
+      "Sends reminders and easy cancel/reschedule",
+      "Fills gaps from a waitlist when tables free up",
+    ],
+    what: "Guests book online and get confirmations + reminders; cancellations are easy, and freed tables get offered to your waitlist automatically.",
+    why: "Fewer no-shows and better-filled tables protect covers on your busiest nights, with less phone chaos.",
+    effort: "quickwin",
+    difficulty: "diy",
+    impact: 7,
+    setupTime: "An hour to set up",
+    cost: "Free/low tiers available",
+    synergies: ["scheduling", "reviews", "ho_menu"],
+    tools: [
+      { name: "Cal.com", url: "https://cal.com", tier: "freemium", note: "Simple bookings + reminders" },
+      { name: "Google Reserve / OpenTable", url: "https://www.opentable.com", tier: "paid", note: "Restaurant-grade" },
+    ],
+    honestNote:
+      "Reservation software isn't AI — it's booking + reminders. Start with a free tool before a paid platform.",
+    notReallyAI: true,
+    tiers: [
+      { level: "Quick Win", time: "An hour", what: "Put a booking link on your site and socials with automatic confirmations + reminders.", impact: "Fewer no-shows and less phone tag immediately." },
+      { level: "Workflow Fix", time: "A few hours", what: "Add easy cancel/reschedule and a deposit for large parties.", impact: "Held tables get freed early instead of sitting empty." },
+      { level: "Built right", time: "1–2 weeks", what: "Auto-offer freed tables to a waitlist and sync with your floor plan.", impact: "Tighter covers on busy nights, managed automatically." },
+    ],
+    playbook: {
+      howItWorks:
+        "Guests self-book from your real availability and get confirmations + reminders, so fewer forget. Easy cancellation frees tables early, and a waitlist step re-offers those tables to guests hoping for a spot.",
+      stack: [
+        { layer: "Bookings", tool: "Cal.com / OpenTable", does: "Online reservations + availability." },
+        { layer: "Reminders", tool: "Built-in SMS/email", does: "Confirm, remind, enable cancel." },
+        { layer: "Waitlist", tool: "Booking tool", does: "Re-fills freed tables." },
+      ],
+      phases: [
+        { title: "Set up bookings", detail: "Add a booking link everywhere with confirmations + reminders." },
+        { title: "Ease cancellations", detail: "One-tap cancel/reschedule; consider deposits for big parties." },
+        { title: "Add a waitlist", detail: "Offer freed tables to waiting guests automatically." },
+      ],
+      watchOuts: [
+        "Keep availability accurate to avoid double-bookings.",
+        "Reminders shouldn't feel spammy — one confirmation, one reminder.",
+      ],
+      worthItWhen: "No-shows and phone-booking chaos are hurting busy services.",
+      skipIf: "You're walk-in only and don't take reservations.",
+      metric: "No-show rate and covers filled on peak nights.",
+      timeToValue: "An hour to set up; fewer no-shows this week.",
+    },
+  },
+
+  ho_menu: {
+    id: "ho_menu",
+    name: "Menu & specials content",
+    category: "Marketing",
+    problem: "Menu descriptions and daily specials go stale, and posting them everywhere is one more job in a busy day.",
+    helps: [
+      "Writes appetising menu and specials descriptions",
+      "Turns today's special into ready-to-post content",
+      "Keeps your online presence current without the effort",
+    ],
+    what: "Turn dishes and daily specials into mouth-watering descriptions and ready-to-post social/menu content — in your voice, in minutes.",
+    why: "Fresh, appealing content brings people in and keeps your channels alive without adding to the kitchen's load.",
+    effort: "quickwin",
+    difficulty: "diy",
+    impact: 5,
+    setupTime: "Start today",
+    cost: "Free tier works",
+    synergies: ["content", "socials", "reviews"],
+    tools: [
+      { name: "Claude", url: "https://claude.ai", tier: "freemium", note: "Dish → tasty description" },
+      { name: "Buffer", url: "https://buffer.com", tier: "freemium", note: "Schedule the specials posts" },
+    ],
+    tiers: [
+      { level: "Quick Win", time: "Today", what: "Give AI the dish + ingredients and get a tasty description for the menu or a post.", impact: "Appealing copy without staring at a blank page." },
+      { level: "Workflow Fix", time: "An hour", what: "Batch a week of specials posts and schedule them to publish.", impact: "Your feed stays fresh through a busy week." },
+      { level: "Built right", time: "1–2 weeks", what: "Today's special → auto-generate post + update the online menu.", impact: "Specials are live everywhere with one entry." },
+    ],
+    playbook: {
+      howItWorks:
+        "You give the AI the dish and its ingredients with your tone, and it writes an appealing description you can drop on the menu or turn into a post. Batch a week of specials in one sitting and schedule them so your channels never go quiet.",
+      stack: [
+        { layer: "Writer", tool: "Claude", does: "Dish → appetising description." },
+        { layer: "Scheduler", tool: "Buffer", does: "Queues the specials posts." },
+      ],
+      phases: [
+        { title: "Today — one description", detail: "Feed a dish + ingredients + tone; get menu/post copy." },
+        { title: "Batch a week", detail: "Do a week of specials at once and schedule them." },
+        { title: "Automate", detail: "Wire today's special to auto-post and update the online menu." },
+      ],
+      watchOuts: [
+        "Keep descriptions accurate — don't oversell ingredients you don't use.",
+        "Photos still matter most on food posts; pair copy with a good image.",
+      ],
+      worthItWhen: "Your channels go quiet and menu copy feels flat.",
+      skipIf: "You have a set menu and don't run specials or socials.",
+      metric: "Posting consistency and reach/engagement on specials.",
+      timeToValue: "Today — first tasty description in minutes.",
+    },
+  },
+
+  co_leadmagnet: {
+    id: "co_leadmagnet",
+    name: "Lead magnet funnel",
+    category: "Marketing",
+    problem: "You have followers and interest, but no simple way to turn them into an email list you can actually nurture.",
+    helps: [
+      "Creates a valuable freebie (quiz, guide, mini-course)",
+      "Captures emails and delivers it automatically",
+      "Kicks off a nurture sequence toward your offer",
+    ],
+    what: "A useful free resource (a guide, quiz, or mini-course) captures emails, delivers instantly, and drops new subscribers into a nurture sequence toward your paid offer.",
+    why: "It turns fleeting attention into an owned audience you can sell to again and again — the foundation of course/coaching sales.",
+    effort: "project",
+    difficulty: "weekend",
+    impact: 7,
+    setupTime: "A weekend to build the first one",
+    cost: "Free tiers cover it to start",
+    synergies: ["content", "followup", "socials"],
+    tools: [
+      { name: "MailerLite", url: "https://mailerlite.com", tier: "freemium", note: "Landing + capture + nurture" },
+      { name: "Claude", url: "https://claude.ai", tier: "freemium", note: "Draft the freebie + emails" },
+    ],
+    tiers: [
+      { level: "Quick Win", time: "A few hours", what: "Draft a one-page guide with AI and put it behind an email signup form.", impact: "You start turning followers into subscribers today." },
+      { level: "Workflow Fix", time: "A weekend", what: "Add a landing page, auto-delivery, and a short welcome/nurture sequence.", impact: "A hands-off funnel that captures and warms leads." },
+      { level: "Built right", time: "2–3 weeks", what: "Build a quiz/mini-course magnet with segmentation into tailored nurture.", impact: "Higher-converting funnel feeding your offer on autopilot." },
+    ],
+    playbook: {
+      howItWorks:
+        "You create something genuinely useful (a guide or quiz) with AI's help, put it behind an email form on a simple landing page, and auto-deliver it. New subscribers enter a short sequence that builds trust and points to your paid offer.",
+      stack: [
+        { layer: "Magnet", tool: "Claude", does: "Drafts the guide/quiz content." },
+        { layer: "Capture", tool: "MailerLite", does: "Landing page, form, auto-delivery." },
+        { layer: "Nurture", tool: "MailerLite automation", does: "Welcome sequence toward the offer." },
+      ],
+      phases: [
+        { title: "Pick a magnet", detail: "Choose one specific, valuable resource your audience wants now." },
+        { title: "Build capture + delivery", detail: "Landing page → email form → instant delivery." },
+        { title: "Weekend — nurture", detail: "Add a short welcome sequence that leads to your offer." },
+      ],
+      watchOuts: [
+        "The freebie has to be genuinely useful, or the list won't trust or buy.",
+        "Don't pitch too hard, too early — nurture before you sell.",
+      ],
+      worthItWhen: "You have an audience but no list, or a list you don't nurture.",
+      skipIf: "You have no audience or traffic yet — build that first.",
+      metric: "Signup conversion rate and list→customer conversion.",
+      timeToValue: "A basic magnet today; a full funnel over a weekend.",
+    },
+  },
+
+  co_lessons: {
+    id: "co_lessons",
+    name: "Course & lesson drafting",
+    category: "Marketing",
+    problem: "You know your material, but turning outlines into finished lessons, scripts and workbooks is a blank-page slog.",
+    helps: [
+      "Turns your outline into lesson scripts and drafts",
+      "Generates worksheets, summaries and quizzes",
+      "Gets a course out of your head and into shape faster",
+    ],
+    what: "Give your outline and expertise, and get first-draft lesson scripts, workbooks, summaries and quizzes — in your voice — to edit rather than write from scratch.",
+    why: "You ship your course faster and more consistently, without the module-by-module blank-page grind.",
+    effort: "quickwin",
+    difficulty: "diy",
+    impact: 6,
+    setupTime: "Start today",
+    cost: "Free tier works; ~€18/mo for heavy use",
+    synergies: ["content", "co_leadmagnet", "socials"],
+    tools: [
+      { name: "Claude", url: "https://claude.ai", tier: "freemium", note: "Outline → lesson drafts" },
+      { name: "Notion", url: "https://www.notion.so", tier: "freemium", note: "Organise the course" },
+    ],
+    tiers: [
+      { level: "Quick Win", time: "Today", what: "Feed a module outline + your key points and get a lesson script draft to edit.", impact: "Modules move from idea to draft in minutes." },
+      { level: "Workflow Fix", time: "A few hours", what: "Generate matching worksheets, summaries and quizzes per lesson.", impact: "A complete lesson package, not just a script." },
+      { level: "Built right", time: "1–2 weeks", what: "Build a repeatable course-production pipeline from outline to publishable set.", impact: "Produce and refresh courses far faster." },
+    ],
+    playbook: {
+      howItWorks:
+        "You bring the expertise and the outline; the AI turns each module into a first-draft script and supporting materials in your voice. You edit for accuracy and personality — it accelerates the drafting, it doesn't replace your teaching.",
+      stack: [
+        { layer: "Source", tool: "Your outline + notes", does: "The expertise and structure." },
+        { layer: "Drafting", tool: "Claude", does: "Scripts, worksheets, quizzes." },
+        { layer: "Organise", tool: "Notion", does: "Keeps the course in order." },
+      ],
+      phases: [
+        { title: "Today — one lesson", detail: "Feed a module outline + your points; get a script draft to edit." },
+        { title: "Round it out", detail: "Generate the worksheet, summary and quiz for that lesson." },
+        { title: "Systematise", detail: "Reuse the prompts across modules for a consistent production flow." },
+      ],
+      watchOuts: [
+        "Edit heavily — raw AI teaching sounds generic and won't reflect your method.",
+        "You're the expert; verify every claim and example.",
+      ],
+      worthItWhen: "You have the knowledge but keep stalling on producing the material.",
+      skipIf: "Your course is already built, or you prefer to write it all yourself.",
+      metric: "Modules produced per week and time from outline to publishable.",
+      timeToValue: "Today — your first lesson drafted in minutes.",
+    },
+  },
+
+  sa_onboardemails: {
+    id: "sa_onboardemails",
+    name: "Product onboarding emails",
+    category: "Marketing",
+    problem: "People sign up but never reach the 'aha' moment — so they drift off before they ever see the value.",
+    helps: [
+      "Guides new users to their first win with timed emails",
+      "Triggers on what they have (and haven't) done",
+      "Lifts activation without a bigger team",
+    ],
+    what: "A behavior-based email sequence walks each new signup to their first real win — nudging the steps they haven't done yet.",
+    why: "Activation is where retention starts. Getting more signups to value is often the highest-leverage growth you can do.",
+    effort: "project",
+    difficulty: "weekend",
+    impact: 7,
+    setupTime: "A weekend to map + build",
+    cost: "Free tiers to start; scales with users",
+    synergies: ["onboarding", "followup", "sa_churn"],
+    tools: [
+      { name: "Loops", url: "https://loops.so", tier: "freemium", note: "Product onboarding emails" },
+      { name: "Customer.io", url: "https://customer.io", tier: "paid", note: "Behavior-based messaging" },
+    ],
+    tiers: [
+      { level: "Quick Win", time: "A few hours", what: "Write a 3-email welcome series pointing users to the one key first action.", impact: "More signups take the step that shows them value." },
+      { level: "Workflow Fix", time: "A weekend", what: "Make it behavior-based: only nudge steps a user hasn't completed.", impact: "Relevant nudges that actually move activation." },
+      { level: "Built right", time: "2–4 weeks", what: "Full lifecycle messaging tied to product events across email + in-app.", impact: "A durable lift in activation and early retention." },
+    ],
+    playbook: {
+      howItWorks:
+        "You define the single most important first action (the 'aha'). New users enter a short sequence that guides them to it; as your product reports what they've done, the messaging adapts — nudging only the steps still outstanding, and easing off once they're active.",
+      stack: [
+        { layer: "Events", tool: "Your product / analytics", does: "Signals what each user has done." },
+        { layer: "Messaging", tool: "Loops / Customer.io", does: "Sends the behavior-based sequence." },
+      ],
+      phases: [
+        { title: "Define the 'aha'", detail: "Pick the one action that predicts a user sticking around." },
+        { title: "Write the welcome series", detail: "3 emails guiding toward that action; ship it first." },
+        { title: "Weekend — make it behavioral", detail: "Trigger on events so you only nudge what's undone." },
+      ],
+      watchOuts: [
+        "Don't blast every user the same emails — irrelevance kills activation flows.",
+        "Fix an unclear first-run experience too; email can't rescue a confusing product.",
+      ],
+      worthItWhen: "Signups routinely fail to reach first value and drift away.",
+      skipIf: "Activation is already strong, or you have almost no signups yet.",
+      metric: "Activation rate (signup → first key action) and early retention.",
+      timeToValue: "Welcome series live in hours; behavioral version over a weekend.",
+    },
+  },
+
+  sa_churn: {
+    id: "sa_churn",
+    name: "Churn-risk alerts",
+    category: "Operations",
+    problem: "You find out an account is unhappy only after they've already cancelled — too late to save them.",
+    helps: [
+      "Watches usage for early warning signs",
+      "Flags at-risk accounts before they churn",
+      "Gives you a chance to reach out while it still matters",
+    ],
+    what: "Usage signals (drop-off, missed logins, unused features) are watched automatically, and at-risk accounts get flagged so you can step in before they cancel.",
+    why: "Saving an existing customer is far cheaper than winning a new one — and most churn is preventable if you see it coming.",
+    effort: "project",
+    difficulty: "weekend",
+    impact: 7,
+    setupTime: "A weekend to define + wire",
+    cost: "Free tiers cover low volume",
+    synergies: ["reporting", "data", "sa_onboardemails"],
+    tools: [
+      { name: "Make", url: "https://make.com", tier: "freemium", note: "Watch signals, raise alerts" },
+      { name: "Google Sheets", url: "https://sheets.google.com", tier: "free", note: "Usage + risk scoring" },
+    ],
+    tiers: [
+      { level: "Quick Win", time: "A few hours", what: "Pull key usage into a sheet and manually flag accounts whose activity dropped.", impact: "You start spotting risk before the cancel button." },
+      { level: "Workflow Fix", time: "A weekend", what: "Automate a simple risk score and alert you (or CS) when it crosses a threshold.", impact: "At-risk accounts surface automatically, in time to act." },
+      { level: "Built right", time: "2–4 weeks", what: "Wire signals to your CRM with playbooks/automated check-ins per risk level.", impact: "A proactive retention system, not fire-fighting cancellations." },
+    ],
+    playbook: {
+      howItWorks:
+        "You decide which behaviors signal risk (logins dropping, a key feature unused, support silence). Those signals feed a simple score; when an account crosses the line, you (or your CS person) get an alert with the context — so you reach out while it can still change the outcome.",
+      stack: [
+        { layer: "Signals", tool: "Product data / Sheets", does: "Usage metrics per account." },
+        { layer: "Scoring", tool: "Make + rules", does: "Turns signals into a risk flag." },
+        { layer: "Alert", tool: "Slack / email / CRM", does: "Surfaces at-risk accounts to act on." },
+      ],
+      phases: [
+        { title: "Define risk", detail: "Pick 3–4 behaviors that reliably precede churn for you." },
+        { title: "Score + review", detail: "Combine them into a simple score; sanity-check on recent churns." },
+        { title: "Weekend — automate alerts", detail: "Fire an alert with context when an account crosses the threshold." },
+      ],
+      watchOuts: [
+        "A score with no follow-up action is useless — pair alerts with a clear play.",
+        "Avoid alert fatigue; tune thresholds so flags stay meaningful.",
+      ],
+      worthItWhen: "You lose customers you could have saved with earlier outreach.",
+      skipIf: "You have very few accounts you already know personally.",
+      metric: "Churn rate and share of at-risk accounts saved after outreach.",
+      timeToValue: "Manual flags this week; automated alerts after a weekend.",
+    },
+  },
 };
