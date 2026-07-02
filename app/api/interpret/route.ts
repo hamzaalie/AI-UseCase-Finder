@@ -12,7 +12,28 @@ export const dynamic = "force-dynamic";
 const TASK_IDS = TASKS.map((t) => t.id);
 const VALID_TASK = new Set<string>(TASK_IDS);
 const VALID_INDUSTRY = new Set(INDUSTRIES.map((i) => i.id));
-const MAX_LEN = 2000;
+const MAX_LEN = 1200; // caps input tokens per call
+const MIN_AI_LEN = 15; // shorter than this isn't worth a paid call — use keywords
+
+// --- Cost guardrail: best-effort per-IP rate limit (in-memory) ---
+// When exceeded we fall back to the FREE keyword matcher instead of erroring,
+// so a burst of traffic (or abuse) can never keep spending Claude credits.
+const WINDOW_MS = 10 * 60 * 1000; // 10 minutes
+const MAX_AI_CALLS = 6; // paid Claude calls per IP per window
+const hits = new Map<string, number[]>();
+
+function allowAiCall(ip: string): boolean {
+  const now = Date.now();
+  const recent = (hits.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
+  if (recent.length >= MAX_AI_CALLS) {
+    hits.set(ip, recent);
+    return false;
+  }
+  recent.push(now);
+  hits.set(ip, recent);
+  if (hits.size > 5000) hits.clear(); // crude cap on memory growth
+  return true;
+}
 
 // Structured output: the model may ONLY choose from our fixed task ids.
 const PLAN_SCHEMA = {
@@ -61,8 +82,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: "Please describe what's slowing you down." }, { status: 400 });
   }
 
-  // No key → shallow keyword fallback (still useful, still free).
-  if (!process.env.ANTHROPIC_API_KEY) {
+  // Fall back to the FREE keyword matcher (no Claude call) when:
+  //  - no key configured
+  //  - the text is trivially short (not worth a paid call)
+  //  - this IP has exceeded its rate limit
+  const ip = (req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim() || "unknown";
+  if (!process.env.ANTHROPIC_API_KEY || description.length < MIN_AI_LEN || !allowAiCall(ip)) {
     return NextResponse.json({ ok: true, ...keywordInterpret(description) });
   }
 
@@ -83,7 +108,7 @@ export async function POST(req: NextRequest) {
 
     const res = await client.messages.create({
       model: "claude-haiku-4-5",
-      max_tokens: 1024,
+      max_tokens: 600, // enough for a short message + a few ratings; caps output cost
       system,
       messages: [{ role: "user", content: `Here's what they said:\n\n"""${description}"""` }],
       output_config: { format: { type: "json_schema", schema: PLAN_SCHEMA } },

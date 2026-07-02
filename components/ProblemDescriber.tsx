@@ -10,13 +10,19 @@ export default function ProblemDescriber({ onInterpret }: Props) {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [lastRead, setLastRead] = useState<string | null>(null);
+
+  const trimmed = text.trim();
+  const alreadyRead = trimmed.length > 0 && trimmed === lastRead;
 
   async function handleRead() {
-    if (!text.trim() || loading) return;
+    // Don't spend a call re-reading identical text.
+    if (!trimmed || loading || alreadyRead) return;
     setLoading(true);
     setError("");
     try {
-      await onInterpret(text.trim());
+      await onInterpret(trimmed);
+      setLastRead(trimmed);
     } catch {
       setError("Couldn't read that just now — you can still rate the tasks below.");
     } finally {
@@ -47,10 +53,10 @@ export default function ProblemDescriber({ onInterpret }: Props) {
         <button
           type="button"
           onClick={handleRead}
-          disabled={loading || !text.trim()}
+          disabled={loading || !trimmed || alreadyRead}
           className="rounded-xl bg-structure px-5 py-2.5 text-sm font-semibold text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
         >
-          {loading ? "Reading…" : "Read my situation ✨"}
+          {loading ? "Reading…" : alreadyRead ? "✓ Read" : "Read my situation ✨"}
         </button>
       </div>
       {error && <p className="mt-2 text-sm text-accent">{error}</p>}
