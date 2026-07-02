@@ -23,6 +23,7 @@ const UNLOCK_KEY = "aiuf:unlocked:v1";
 export default function Results({ result, selection, planUrl, planPdfUrl, aiMessage }: Props) {
   const [unlocked, setUnlocked] = useState(false);
   const bookingUrl = process.env.NEXT_PUBLIC_BOOKING_URL;
+  const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL || "hamzaaliaps098@gmail.com";
 
   // Once someone has unlocked (left their email), don't gate them again.
   useEffect(() => {
@@ -115,23 +116,67 @@ export default function Results({ result, selection, planUrl, planPdfUrl, aiMess
         </>
       )}
 
-      {/* Booking bridge */}
-      <div className="mt-10 rounded-2xl bg-ink p-6 text-center text-paper print:hidden">
-        <p className="font-serif text-xl">Ready to implement?</p>
-        <p className="mt-2 text-paper/80">
-          Some of these are worth doing yourself. Some are worth having built right. If you want help
-          deciding — that&apos;s what I do.
+      {/* How Netsol AI can help */}
+      <div className="mt-10 rounded-2xl bg-ink p-6 text-paper sm:p-8 print:hidden">
+        <p className="text-xs font-bold uppercase tracking-wider text-accent">Want a hand?</p>
+        <h3 className="mt-2 font-serif text-2xl">Netsol AI can build this for you</h3>
+        <p className="mt-2 max-w-2xl text-paper/80">
+          Your plan is honest about what to do yourself and what&apos;s worth building right. If you&apos;d
+          rather not wire it all up on your own, that&apos;s exactly what I do — I&apos;m Hamza, and I build
+          these systems for small businesses at Netsol AI.
         </p>
-        {bookingUrl && (
+
+        <div className="mt-6 grid gap-3 sm:grid-cols-3">
+          <div className="rounded-xl bg-paper/10 p-4">
+            <p className="font-semibold">Point me at your quick wins</p>
+            <p className="mt-1 text-sm text-paper/70">
+              I&apos;ll set up the do-it-yourself ones with you so they actually go live — fast, and mostly free.
+            </p>
+          </div>
+          <div className="rounded-xl bg-paper/10 p-4">
+            <p className="font-semibold">Build the bigger projects</p>
+            <p className="mt-1 text-sm text-paper/70">
+              I design and build the automations end-to-end so they run reliably, hands-off.
+            </p>
+          </div>
+          <div className="rounded-xl bg-paper/10 p-4">
+            <p className="font-semibold">Not sure what&apos;s worth it?</p>
+            <p className="mt-1 text-sm text-paper/70">
+              A free 15-minute call to decide which one or two things to do first — and what to skip.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-6 flex flex-wrap gap-3">
+          {bookingUrl && (
+            <a
+              href={bookingUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block rounded-xl bg-accent px-6 py-3 font-semibold text-white"
+            >
+              Book a free 15-min call
+            </a>
+          )}
           <a
-            href={bookingUrl}
+            href={`mailto:${contactEmail}?subject=${encodeURIComponent(
+              `Help with my AI plan (${result.industryLabel})`
+            )}&body=${encodeURIComponent(
+              `Hi Hamza,\n\nI just used the AI Use-Case Finder for my ${result.industryLabel.toLowerCase()} business and I'd like a hand with:\n\n- \n\nMy plan: ${planUrl}\n`
+            )}`}
+            className="inline-block rounded-xl border border-paper/40 px-6 py-3 font-semibold text-paper transition-colors hover:bg-paper/10"
+          >
+            Email Hamza
+          </a>
+          <a
+            href="https://netsolai.cz"
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-4 inline-block rounded-xl bg-accent px-6 py-3 font-semibold text-white"
+            className="inline-flex items-center px-3 py-3 text-sm text-paper/70 underline decoration-paper/30 underline-offset-2 hover:text-paper"
           >
-            Book a quick call
+            netsolai.cz
           </a>
-        )}
+        </div>
       </div>
     </section>
   );
