@@ -75,8 +75,9 @@ export default function HelpRequest({ items, industry, planUrl, planPdfUrl }: Pr
       <div className="rounded-xl bg-paper/10 p-5">
         <p className="font-serif text-xl">Got it — thank you. 🙌</p>
         <p className="mt-1 text-paper/80">
-          Your request is on its way to me. I&apos;ll reply to <span className="font-medium">{email}</span> soon
-          to talk through {selected.size} thing{selected.size > 1 ? "s" : ""} you want built.
+          Your request has landed in my inbox. I&apos;m Hamza — I&apos;ll personally email you at{" "}
+          <span className="font-medium">{email}</span> soon about the {selected.size} thing
+          {selected.size > 1 ? "s" : ""} you want built.
         </p>
       </div>
     );
