@@ -7,7 +7,6 @@ import UseCaseCard from "./UseCaseCard";
 import ShareBar from "./ShareBar";
 import OpportunityScore from "./OpportunityScore";
 import EmailCapture from "./EmailCapture";
-import Checklist from "./Checklist";
 import HelpRequest from "./HelpRequest";
 
 interface Props {
@@ -107,14 +106,11 @@ export default function Results({ result, selection, planUrl, planPdfUrl, aiMess
         </div>
       )}
 
-      {/* Full-plan tools + checklist appear once unlocked */}
+      {/* Full-plan tools appear once unlocked */}
       {showRest && (
-        <>
-          <div className="mt-8">
-            <ShareBar result={result} selection={selection} />
-          </div>
-          <Checklist solutionIds={all.map((s) => s.id)} />
-        </>
+        <div className="mt-8">
+          <ShareBar result={result} selection={selection} />
+        </div>
       )}
 
       {/* How Netsol AI can help */}
