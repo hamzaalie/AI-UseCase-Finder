@@ -2,20 +2,33 @@
 
 import { FormEvent, useState } from "react";
 
+type Variant = "gate" | "newsletter";
+
 interface Props {
+  variant?: Variant;
   industry: string | null;
   tasks: string[];
   planUrl: string;
   planPdfUrl: string;
-  lockedCount: number; // how many recommendations are still locked
+  lockedCount: number; // recommendations still locked (gate variant)
   onSuccess: () => void;
 }
 
 type Status = "idle" | "loading" | "error";
 
-export default function EmailCapture({ industry, tasks, planUrl, planPdfUrl, lockedCount, onSuccess }: Props) {
+export default function EmailCapture({
+  variant = "gate",
+  industry,
+  tasks,
+  planUrl,
+  planPdfUrl,
+  lockedCount,
+  onSuccess,
+}: Props) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
+  const [done, setDone] = useState(false);
+  const isNewsletter = variant === "newsletter";
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -25,9 +38,10 @@ export default function EmailCapture({ industry, tasks, planUrl, planPdfUrl, loc
       const res = await fetch("/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, industry, tasks, planUrl, planPdfUrl }),
+        body: JSON.stringify({ email, industry, tasks, planUrl, planPdfUrl, source: variant }),
       });
       if (res.ok) {
+        setDone(true);
         onSuccess();
       } else {
         setStatus("error");
@@ -37,20 +51,40 @@ export default function EmailCapture({ industry, tasks, planUrl, planPdfUrl, loc
     }
   }
 
+  if (done) {
+    return (
+      <section className="rounded-2xl border-2 border-dashed border-easy/50 bg-easy/5 p-6 text-center">
+        <p className="text-2xl" aria-hidden="true">
+          🎉
+        </p>
+        <h2 className="mt-2 font-serif text-2xl">{isNewsletter ? "You're subscribed" : "You're in"}</h2>
+        <p className="mx-auto mt-2 max-w-md text-muted">
+          {isNewsletter
+            ? "I'll send new AI use cases and practical, no-hype tips as I add them. Unsubscribe anytime."
+            : "Your full plan is unlocked below. Check your inbox for the PDF."}
+        </p>
+      </section>
+    );
+  }
+
   return (
     <section className="rounded-2xl border-2 border-dashed border-easy/50 bg-easy/5 p-6 text-center">
       <p className="text-2xl" aria-hidden="true">
-        🔓
+        {isNewsletter ? "✉️" : "🔓"}
       </p>
       <h2 className="mt-2 font-serif text-2xl">
-        {lockedCount > 0
-          ? `Unlock ${lockedCount} more recommendation${lockedCount > 1 ? "s" : ""}`
-          : "Get your plan as a PDF"}
+        {isNewsletter
+          ? "Want more where this came from?"
+          : lockedCount > 0
+            ? `Unlock ${lockedCount} more recommendation${lockedCount > 1 ? "s" : ""}`
+            : "Get your plan as a PDF"}
       </h2>
       <p className="mx-auto mt-2 max-w-md text-muted">
-        {lockedCount > 0
-          ? "Enter your email to reveal the rest of your roadmap, get a downloadable PDF, and a shareable link to revisit anytime. No spam — just your plan."
-          : "Enter your email to get your plan as a downloadable PDF and a shareable link to revisit anytime. No spam — just your plan."}
+        {isNewsletter
+          ? "Subscribe and I'll send new AI use cases for your industry and practical, no-hype tips you can actually use. No spam."
+          : lockedCount > 0
+            ? "Enter your email to reveal the rest of your roadmap, get a downloadable PDF, and a shareable link to revisit anytime. No spam — just your plan."
+            : "Enter your email to get your plan as a downloadable PDF and a shareable link to revisit anytime. No spam — just your plan."}
       </p>
       <form onSubmit={handleSubmit} className="mx-auto mt-4 flex max-w-md flex-col gap-3 sm:flex-row">
         <input
@@ -67,7 +101,7 @@ export default function EmailCapture({ industry, tasks, planUrl, planPdfUrl, loc
           disabled={status === "loading"}
           className="rounded-xl bg-easy px-6 py-3 font-semibold text-white transition-opacity disabled:opacity-50"
         >
-          {status === "loading" ? "Unlocking…" : "Get full results"}
+          {status === "loading" ? "Sending…" : isNewsletter ? "Subscribe" : "Get full results"}
         </button>
       </form>
       {status === "error" && (

@@ -19,16 +19,19 @@ interface Props {
 
 const FREE_COUNT = 3;
 const UNLOCK_KEY = "aiuf:unlocked:v1";
+const SUBSCRIBED_KEY = "aiuf:subscribed:v1";
 
 export default function Results({ result, selection, planUrl, planPdfUrl, aiMessage }: Props) {
   const [unlocked, setUnlocked] = useState(false);
+  const [subscribed, setSubscribed] = useState(false);
   const bookingUrl = process.env.NEXT_PUBLIC_BOOKING_URL;
   const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL || "info@netsolai.cz";
 
-  // Once someone has unlocked (left their email), don't gate them again.
+  // Remember people who already unlocked / subscribed so we don't nag them.
   useEffect(() => {
     try {
       if (window.localStorage.getItem(UNLOCK_KEY) === "1") setUnlocked(true);
+      if (window.localStorage.getItem(SUBSCRIBED_KEY) === "1") setSubscribed(true);
     } catch {
       /* ignore */
     }
@@ -43,11 +46,23 @@ export default function Results({ result, selection, planUrl, planPdfUrl, aiMess
     }
   }
 
+  // Persist subscription without unmounting the card (so it can show its thank-you).
+  function markSubscribed() {
+    try {
+      window.localStorage.setItem(SUBSCRIBED_KEY, "1");
+    } catch {
+      /* ignore */
+    }
+  }
+
   const all = result.ordered;
   const total = all.length;
   const free = all.slice(0, FREE_COUNT);
   const rest = all.slice(FREE_COUNT);
-  const showRest = unlocked; // full plan (rest + PDF/share) unlocks with an email
+  const hasLocked = rest.length > 0;
+  // Big plans gate the rest behind an email; small plans are fully free.
+  const showRest = unlocked || !hasLocked;
+  const emailTasks = Object.keys(selection.ratings).filter((k) => selection.ratings[k] >= 1);
 
   return (
     <section className="reveal border-t border-ink/10 py-8" aria-labelledby="step-results">
@@ -84,13 +99,13 @@ export default function Results({ result, selection, planUrl, planPdfUrl, aiMess
         ))}
       </div>
 
-      {/* Email opt-in: unlocks the rest (if any) + the PDF/share tools.
-          Shown for every plan size so we always get a chance to capture the lead. */}
-      {!unlocked && (
+      {/* Big plan → gate the rest behind an email. */}
+      {hasLocked && !unlocked && (
         <div className="mt-6">
           <EmailCapture
+            variant="gate"
             industry={selection.industry}
-            tasks={Object.keys(selection.ratings).filter((k) => selection.ratings[k] >= 1)}
+            tasks={emailTasks}
             planUrl={planUrl}
             planPdfUrl={planPdfUrl}
             lockedCount={rest.length}
@@ -107,10 +122,25 @@ export default function Results({ result, selection, planUrl, planPdfUrl, aiMess
         </div>
       )}
 
-      {/* Full-plan tools appear once unlocked */}
+      {/* Full-plan tools appear once unlocked (or free on small plans) */}
       {showRest && (
         <div className="mt-8">
           <ShareBar result={result} selection={selection} />
+        </div>
+      )}
+
+      {/* Small plan → nothing to gate, so invite them to subscribe for more. */}
+      {!hasLocked && !subscribed && (
+        <div className="mt-6">
+          <EmailCapture
+            variant="newsletter"
+            industry={selection.industry}
+            tasks={emailTasks}
+            planUrl={planUrl}
+            planPdfUrl={planPdfUrl}
+            lockedCount={0}
+            onSuccess={markSubscribed}
+          />
         </div>
       )}
 
