@@ -47,7 +47,7 @@ export default function Results({ result, selection, planUrl, planPdfUrl, aiMess
   const total = all.length;
   const free = all.slice(0, FREE_COUNT);
   const rest = all.slice(FREE_COUNT);
-  const showRest = unlocked || rest.length === 0;
+  const showRest = unlocked; // full plan (rest + PDF/share) unlocks with an email
 
   return (
     <section className="reveal border-t border-ink/10 py-8" aria-labelledby="step-results">
@@ -84,8 +84,9 @@ export default function Results({ result, selection, planUrl, planPdfUrl, aiMess
         ))}
       </div>
 
-      {/* Gate → the rest */}
-      {rest.length > 0 && !unlocked && (
+      {/* Email opt-in: unlocks the rest (if any) + the PDF/share tools.
+          Shown for every plan size so we always get a chance to capture the lead. */}
+      {!unlocked && (
         <div className="mt-6">
           <EmailCapture
             industry={selection.industry}

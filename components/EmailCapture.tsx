@@ -43,11 +43,14 @@ export default function EmailCapture({ industry, tasks, planUrl, planPdfUrl, loc
         🔓
       </p>
       <h2 className="mt-2 font-serif text-2xl">
-        {lockedCount > 0 ? `Unlock ${lockedCount} more recommendation${lockedCount > 1 ? "s" : ""}` : "Get your full plan"}
+        {lockedCount > 0
+          ? `Unlock ${lockedCount} more recommendation${lockedCount > 1 ? "s" : ""}`
+          : "Get your plan as a PDF"}
       </h2>
       <p className="mx-auto mt-2 max-w-md text-muted">
-        Enter your email to reveal the rest of your roadmap, get a downloadable PDF, and a shareable
-        link to revisit anytime. No spam — just your plan.
+        {lockedCount > 0
+          ? "Enter your email to reveal the rest of your roadmap, get a downloadable PDF, and a shareable link to revisit anytime. No spam — just your plan."
+          : "Enter your email to get your plan as a downloadable PDF and a shareable link to revisit anytime. No spam — just your plan."}
       </p>
       <form onSubmit={handleSubmit} className="mx-auto mt-4 flex max-w-md flex-col gap-3 sm:flex-row">
         <input
