@@ -22,6 +22,7 @@ export default function HelpRequest({ items, industry, planUrl, planPdfUrl }: Pr
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [note, setNote] = useState("");
+  const [hp, setHp] = useState(""); // honeypot
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -55,6 +56,7 @@ export default function HelpRequest({ items, industry, planUrl, planPdfUrl }: Pr
           selected: Array.from(selected),
           planUrl,
           planPdfUrl,
+          hp,
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -97,6 +99,17 @@ export default function HelpRequest({ items, industry, planUrl, planPdfUrl }: Pr
 
   return (
     <form onSubmit={handleSubmit} className="rounded-xl bg-paper/10 p-5">
+      {/* honeypot — hidden from humans */}
+      <input
+        type="text"
+        name="company_website"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        value={hp}
+        onChange={(e) => setHp(e.target.value)}
+        style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }}
+      />
       <p className="font-semibold">Tick what you&apos;d like Netsol to build for you</p>
       <ul className="mt-3 space-y-2">
         {items.map((item) => {

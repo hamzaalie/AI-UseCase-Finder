@@ -26,6 +26,7 @@ export default function EmailCapture({
   onSuccess,
 }: Props) {
   const [email, setEmail] = useState("");
+  const [hp, setHp] = useState(""); // honeypot
   const [status, setStatus] = useState<Status>("idle");
   const [done, setDone] = useState(false);
   const isNewsletter = variant === "newsletter";
@@ -38,7 +39,7 @@ export default function EmailCapture({
       const res = await fetch("/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, industry, tasks, planUrl, planPdfUrl, source: variant }),
+        body: JSON.stringify({ email, industry, tasks, planUrl, planPdfUrl, source: variant, hp }),
       });
       if (res.ok) {
         setDone(true);
@@ -87,6 +88,17 @@ export default function EmailCapture({
             : "Enter your email to get your plan as a downloadable PDF and a shareable link to revisit anytime. No spam — just your plan."}
       </p>
       <form onSubmit={handleSubmit} className="mx-auto mt-4 flex max-w-md flex-col gap-3 sm:flex-row">
+        {/* honeypot — hidden from humans, bots tend to fill it */}
+        <input
+          type="text"
+          name="company_website"
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+          value={hp}
+          onChange={(e) => setHp(e.target.value)}
+          style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }}
+        />
         <input
           type="email"
           required

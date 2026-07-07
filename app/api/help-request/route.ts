@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SOLUTIONS } from "@/data/solutions";
 import { INDUSTRIES } from "@/data/industries";
+import { isDisposableEmail, isHoneypotTripped } from "@/lib/spam";
 
 // Emails Netsol AI when a visitor asks for help building specific use cases.
 // Uses Resend if configured; otherwise logs and succeeds so dev works.
@@ -18,6 +19,7 @@ interface Payload {
   selected?: string[];
   planUrl?: string;
   planPdfUrl?: string;
+  hp?: string; // honeypot
 }
 
 function isSafeUrl(url: string | undefined, req: NextRequest): boolean {
@@ -46,6 +48,12 @@ export async function POST(req: NextRequest) {
 
   if (!email || !EMAIL_RE.test(email)) {
     return NextResponse.json({ ok: false, error: "Please enter a valid email." }, { status: 400 });
+  }
+
+  // Drop bots + throwaway emails silently.
+  if (isHoneypotTripped(body.hp) || isDisposableEmail(email)) {
+    console.log("[help-request blocked]", { email, honeypot: isHoneypotTripped(body.hp) });
+    return NextResponse.json({ ok: true });
   }
 
   const selectedNames = (Array.isArray(body.selected) ? body.selected : [])

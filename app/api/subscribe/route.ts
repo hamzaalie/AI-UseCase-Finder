@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { isDisposableEmail, isHoneypotTripped } from "@/lib/spam";
 
 /**
  * Email capture endpoint.
@@ -17,6 +18,7 @@ interface Payload {
   tasks?: string[];
   planUrl?: string;
   planPdfUrl?: string;
+  hp?: string; // honeypot — real users never fill this
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -50,6 +52,13 @@ export async function POST(req: NextRequest) {
 
   if (!email || !EMAIL_RE.test(email)) {
     return NextResponse.json({ ok: false, error: "Please enter a valid email." }, { status: 400 });
+  }
+
+  // Silently drop bots (honeypot) and throwaway emails — respond ok so they
+  // don't retry, but never store or notify.
+  if (isHoneypotTripped(body.hp) || isDisposableEmail(email)) {
+    console.log("[subscribe blocked]", { email, honeypot: isHoneypotTripped(body.hp) });
+    return NextResponse.json({ ok: true, skipped: true });
   }
 
   // Run every configured provider ALONGSIDE each other (not either/or):
